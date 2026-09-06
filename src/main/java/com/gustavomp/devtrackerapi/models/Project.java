@@ -1,6 +1,5 @@
 package com.gustavomp.devtrackerapi.models;
 
-import com.gustavomp.devtrackerapi.models.enums.BillingType;
 import com.gustavomp.devtrackerapi.models.enums.ProjectStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,15 +7,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Project {
+public abstract class Project {
 
     @Id
     private Long id;
@@ -24,10 +23,6 @@ public class Project {
     private String name;
 
     private String description;
-
-    private BigDecimal budget;
-
-    private BigDecimal hourlyRate;
 
     private Integer workedHours;
 
@@ -37,9 +32,6 @@ public class Project {
 
     @Enumerated(EnumType.STRING)
     private ProjectStatus projectStatus;
-
-    @Enumerated(EnumType.STRING)
-    private BillingType billingType;
 
     @ManyToOne
     private Client client;
