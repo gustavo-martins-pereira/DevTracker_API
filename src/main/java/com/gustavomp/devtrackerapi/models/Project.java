@@ -35,14 +35,12 @@ public class Project {
 
     private LocalDate dueDate;
 
-    // Enums
     @Enumerated(EnumType.STRING)
     private ProjectStatus projectStatus;
 
     @Enumerated(EnumType.STRING)
     private BillingType billingType;
 
-    // Relationships
     @ManyToOne
     private Client client;
 
