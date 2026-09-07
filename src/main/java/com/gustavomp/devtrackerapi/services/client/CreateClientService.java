@@ -3,6 +3,7 @@ package com.gustavomp.devtrackerapi.services.client;
 import com.gustavomp.devtrackerapi.dtos.requests.CreateClientRequestDto;
 import com.gustavomp.devtrackerapi.dtos.responses.CreateClientResponseDto;
 import com.gustavomp.devtrackerapi.exceptions.EntityAlreadyExistsException;
+import com.gustavomp.devtrackerapi.mappers.ClientMapper;
 import com.gustavomp.devtrackerapi.models.Client;
 import com.gustavomp.devtrackerapi.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class CreateClientService {
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private ClientMapper clientMapper;
+
     public CreateClientResponseDto execute(CreateClientRequestDto createClientRequestDto) {
         Optional<Client> client = clientRepository.findByName(createClientRequestDto.name());
         if (client.isPresent()) {
@@ -24,11 +28,7 @@ public class CreateClientService {
             );
         }
 
-        Client newClient = new Client();
-        newClient.setName(createClientRequestDto.name());
-        newClient.setEmail(createClientRequestDto.email());
-        newClient.setPhone(createClientRequestDto.phone());
-        newClient.setActive(createClientRequestDto.active());
+        Client newClient = clientMapper.toEntity(createClientRequestDto);
 
         Client savedClient = clientRepository.save(newClient);
 
