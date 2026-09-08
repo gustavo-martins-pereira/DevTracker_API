@@ -1,7 +1,7 @@
 package com.gustavomp.devtrackerapi.services.client;
 
-import com.gustavomp.devtrackerapi.dtos.requests.CreateClientRequestDto;
-import com.gustavomp.devtrackerapi.dtos.responses.CreateClientResponseDto;
+import com.gustavomp.devtrackerapi.dtos.requests.client.CreateClientRequestDto;
+import com.gustavomp.devtrackerapi.dtos.responses.client.CreateClientResponseDto;
 import com.gustavomp.devtrackerapi.exceptions.EntityAlreadyExistsException;
 import com.gustavomp.devtrackerapi.mappers.ClientMapper;
 import com.gustavomp.devtrackerapi.models.Client;

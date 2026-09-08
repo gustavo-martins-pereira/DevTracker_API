@@ -1,6 +1,6 @@
 package com.gustavomp.devtrackerapi.services.client;
 
-import com.gustavomp.devtrackerapi.dtos.responses.GetClientByNameResponseDto;
+import com.gustavomp.devtrackerapi.dtos.responses.client.GetClientByNameResponseDto;
 import com.gustavomp.devtrackerapi.mappers.ClientMapper;
 import com.gustavomp.devtrackerapi.models.Client;
 import com.gustavomp.devtrackerapi.repositories.ClientRepository;

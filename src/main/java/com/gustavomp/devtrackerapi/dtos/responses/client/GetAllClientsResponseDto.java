@@ -1,15 +1,15 @@
-package com.gustavomp.devtrackerapi.dtos.responses;
+package com.gustavomp.devtrackerapi.dtos.responses.client;
 
 import com.gustavomp.devtrackerapi.models.Client;
 
-public record GetClientByNameResponseDto(
+public record GetAllClientsResponseDto(
         Long id,
         String name,
         String email,
         String phone,
         Boolean active
 ) {
-    public GetClientByNameResponseDto(Client client) {
+    public GetAllClientsResponseDto(Client client) {
         this(client.getId(), client.getName(), client.getEmail(), client.getPhone(), client.getActive());
     }
 }

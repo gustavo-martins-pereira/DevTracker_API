@@ -1,11 +1,11 @@
 package com.gustavomp.devtrackerapi.controllers;
 
-import com.gustavomp.devtrackerapi.dtos.requests.CreateClientRequestDto;
-import com.gustavomp.devtrackerapi.dtos.requests.UpdateClientByIdRequestDto;
-import com.gustavomp.devtrackerapi.dtos.responses.CreateClientResponseDto;
-import com.gustavomp.devtrackerapi.dtos.responses.GetAllClientsResponseDto;
-import com.gustavomp.devtrackerapi.dtos.responses.GetClientByNameResponseDto;
-import com.gustavomp.devtrackerapi.dtos.responses.UpdateClientByIdResponseDto;
+import com.gustavomp.devtrackerapi.dtos.requests.client.CreateClientRequestDto;
+import com.gustavomp.devtrackerapi.dtos.requests.client.UpdateClientByIdRequestDto;
+import com.gustavomp.devtrackerapi.dtos.responses.client.CreateClientResponseDto;
+import com.gustavomp.devtrackerapi.dtos.responses.client.GetAllClientsResponseDto;
+import com.gustavomp.devtrackerapi.dtos.responses.client.GetClientByNameResponseDto;
+import com.gustavomp.devtrackerapi.dtos.responses.client.UpdateClientByIdResponseDto;
 import com.gustavomp.devtrackerapi.services.client.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

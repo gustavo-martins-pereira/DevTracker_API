@@ -1,4 +1,4 @@
-package com.gustavomp.devtrackerapi.dtos.requests;
+package com.gustavomp.devtrackerapi.dtos.requests.client;
 
 import jakarta.validation.constraints.*;
 

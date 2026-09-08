@@ -1,6 +1,6 @@
-package com.gustavomp.devtrackerapi.dtos.responses;
+package com.gustavomp.devtrackerapi.dtos.responses.client;
 
-public record UpdateClientByIdResponseDto(
+public record CreateClientResponseDto(
         Long id,
         String name,
         String email,
