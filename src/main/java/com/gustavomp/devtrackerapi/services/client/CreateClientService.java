@@ -21,10 +21,14 @@ public class CreateClientService {
     private ClientMapper clientMapper;
 
     public CreateClientResponseDto execute(CreateClientRequestDto createClientRequestDto) {
-        Optional<Client> client = clientRepository.findByName(createClientRequestDto.name());
+        Optional<Client> client = clientRepository.findByNameOrEmailOrPhone(
+                createClientRequestDto.name(),
+                createClientRequestDto.email(),
+                createClientRequestDto.phone()
+        );
         if (client.isPresent()) {
             throw new EntityAlreadyExistsException(
-                    "A client with the name '" + createClientRequestDto.name() + "' already exists."
+                    "A client with the 'name', 'email' or 'phone' already exists."
             );
         }
 

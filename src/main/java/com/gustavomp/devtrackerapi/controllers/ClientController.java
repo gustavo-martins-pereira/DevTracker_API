@@ -6,10 +6,7 @@ import com.gustavomp.devtrackerapi.dtos.responses.CreateClientResponseDto;
 import com.gustavomp.devtrackerapi.dtos.responses.GetAllClientsResponseDto;
 import com.gustavomp.devtrackerapi.dtos.responses.GetClientByNameResponseDto;
 import com.gustavomp.devtrackerapi.dtos.responses.UpdateClientByIdResponseDto;
-import com.gustavomp.devtrackerapi.services.client.CreateClientService;
-import com.gustavomp.devtrackerapi.services.client.GetAllClientsService;
-import com.gustavomp.devtrackerapi.services.client.GetClientByNameService;
-import com.gustavomp.devtrackerapi.services.client.UpdateClientByIdService;
+import com.gustavomp.devtrackerapi.services.client.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +30,9 @@ public class ClientController {
 
     @Autowired
     private UpdateClientByIdService updateClientByIdService;
+
+    @Autowired
+    private DeleteClientByIdService deleteClientByIdService;
 
     /* ---------- POST ---------- */
     @PostMapping
@@ -63,6 +63,14 @@ public class ClientController {
         UpdateClientByIdResponseDto updateClientByIdResponseDto = updateClientByIdService.execute(id,updateClientByIdRequestDto);
 
         return ResponseEntity.ok(updateClientByIdResponseDto);
+    }
+
+    /* ---------- DELETE ---------- */
+    @DeleteMapping(params = "id")
+    public ResponseEntity<Void> deleteClientById(@RequestParam Long id) {
+        deleteClientByIdService.execute(id);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
