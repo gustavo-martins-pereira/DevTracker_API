@@ -2,6 +2,7 @@ package com.gustavomp.devtrackerapi.services.client;
 
 import com.gustavomp.devtrackerapi.dtos.responses.GetAllClientsResponseDto;
 import com.gustavomp.devtrackerapi.mappers.ClientMapper;
+import com.gustavomp.devtrackerapi.models.Client;
 import com.gustavomp.devtrackerapi.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class GetAllClientsService {
     public List<GetAllClientsResponseDto> execute() {
         return clientRepository.findAll()
                 .stream()
+                .filter(Client::getActive)
                 .map(client -> clientMapper.toAllClientsResponseDto(client))
                 .toList();
     }

@@ -20,7 +20,7 @@ public class GetClientByNameService {
     private ClientMapper clientMapper;
 
     public GetClientByNameResponseDto execute(String name) {
-        Optional<Client> optionalClient = clientRepository.findByName(name);
+        Optional<Client> optionalClient = clientRepository.findByNameAndActiveIsTrue(name);
 
         Client client = optionalClient.orElseThrow(() -> new EntityNotFoundException("Client with name: '" + name +
                 "' not found"));

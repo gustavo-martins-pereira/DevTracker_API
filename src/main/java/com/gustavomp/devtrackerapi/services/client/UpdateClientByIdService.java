@@ -23,7 +23,7 @@ public class UpdateClientByIdService {
     private ClientMapper clientMapper;
 
     public UpdateClientByIdResponseDto execute(Long id, UpdateClientByIdRequestDto updateClientByIdRequestDto) {
-        Optional<Client> optionalClient = clientRepository.findById(id);
+        Optional<Client> optionalClient = clientRepository.findByIdAndActiveIsTrue(id);
         if (optionalClient.isEmpty()) throw new EntityNotFoundException("Client with id " + id + " not found");
 
         Optional<Client> existingClient = clientRepository.findByNameOrEmailOrPhone(
