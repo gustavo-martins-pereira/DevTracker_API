@@ -2,12 +2,10 @@ package com.gustavomp.devtrackerapi.dtos.requests;
 
 import jakarta.validation.constraints.*;
 
-public record CreateClientRequestDto(
-        @NotBlank(message = "The 'name' couldn't be blank")
+public record UpdateClientByIdRequestDto(
         @Size(min = 3, message = "The 'name' must be greater than 2 characters")
         String name,
 
-        @NotBlank(message = "The 'email' couldn't be blank")
         @Email(message = "Invalid email format")
         String email,
 
@@ -16,8 +14,5 @@ public record CreateClientRequestDto(
                 regexp = "[0-9]{8}",
                 message = "Invalid phone number format (expected: XXXXXXXX)"
         )
-        String phone,
-
-        @NotNull(message = "The 'active' is required")
-        Boolean active
+        String phone
 ) {}

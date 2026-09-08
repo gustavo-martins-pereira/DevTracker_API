@@ -32,7 +32,7 @@ public class CreateClientService {
 
         Client savedClient = clientRepository.save(newClient);
 
-        return new CreateClientResponseDto(savedClient);
+        return clientMapper.toCreateClientResponseDto(savedClient);
     }
 
 }

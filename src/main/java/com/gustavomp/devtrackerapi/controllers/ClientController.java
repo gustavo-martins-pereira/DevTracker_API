@@ -1,19 +1,21 @@
 package com.gustavomp.devtrackerapi.controllers;
 
 import com.gustavomp.devtrackerapi.dtos.requests.CreateClientRequestDto;
+import com.gustavomp.devtrackerapi.dtos.requests.UpdateClientByIdRequestDto;
 import com.gustavomp.devtrackerapi.dtos.responses.CreateClientResponseDto;
 import com.gustavomp.devtrackerapi.dtos.responses.GetAllClientsResponseDto;
 import com.gustavomp.devtrackerapi.dtos.responses.GetClientByNameResponseDto;
+import com.gustavomp.devtrackerapi.dtos.responses.UpdateClientByIdResponseDto;
 import com.gustavomp.devtrackerapi.services.client.CreateClientService;
 import com.gustavomp.devtrackerapi.services.client.GetAllClientsService;
 import com.gustavomp.devtrackerapi.services.client.GetClientByNameService;
+import com.gustavomp.devtrackerapi.services.client.UpdateClientByIdService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,6 +30,9 @@ public class ClientController {
 
     @Autowired
     private GetClientByNameService getClientByNameService;
+
+    @Autowired
+    private UpdateClientByIdService updateClientByIdService;
 
     /* ---------- POST ---------- */
     @PostMapping
@@ -50,6 +55,14 @@ public class ClientController {
         GetClientByNameResponseDto getClientByNameResponseDto = getClientByNameService.execute(name);
 
         return ResponseEntity.ok(getClientByNameResponseDto);
+    }
+
+    /* ---------- PUT ---------- */
+    @PutMapping(params = "id")
+    public ResponseEntity<UpdateClientByIdResponseDto> updateClientById(@RequestParam Long id, @RequestBody @Valid UpdateClientByIdRequestDto updateClientByIdRequestDto) {
+        UpdateClientByIdResponseDto updateClientByIdResponseDto = updateClientByIdService.execute(id,updateClientByIdRequestDto);
+
+        return ResponseEntity.ok(updateClientByIdResponseDto);
     }
 
 }

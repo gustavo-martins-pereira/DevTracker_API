@@ -4,6 +4,7 @@ import com.gustavomp.devtrackerapi.dtos.requests.CreateClientRequestDto;
 import com.gustavomp.devtrackerapi.dtos.responses.CreateClientResponseDto;
 import com.gustavomp.devtrackerapi.dtos.responses.GetAllClientsResponseDto;
 import com.gustavomp.devtrackerapi.dtos.responses.GetClientByNameResponseDto;
+import com.gustavomp.devtrackerapi.dtos.responses.UpdateClientByIdResponseDto;
 import com.gustavomp.devtrackerapi.models.Client;
 import org.mapstruct.Mapper;
 
@@ -19,5 +20,8 @@ public interface ClientMapper {
 
     // Get Client by Name
     GetClientByNameResponseDto toGetClientByNameResponseDto(Client entity);
+
+    // Update Client by ID
+    UpdateClientByIdResponseDto toUpdateClientByIdResponseDto(Client entity);
 
 }
