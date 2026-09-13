@@ -3,10 +3,12 @@ package com.gustavomp.devtrackerapi.controllers;
 import com.gustavomp.devtrackerapi.dtos.requests.project.CreateProjectRequestDto;
 import com.gustavomp.devtrackerapi.dtos.responses.project.CreateProjectResponseDto;
 import com.gustavomp.devtrackerapi.dtos.responses.project.GetAllProjectsResponseDto;
+import com.gustavomp.devtrackerapi.dtos.responses.project.GetProjectByIdResponseDto;
 import com.gustavomp.devtrackerapi.models.enums.ProjectStatus;
 import com.gustavomp.devtrackerapi.services.client.*;
 import com.gustavomp.devtrackerapi.services.project.CreateProjectService;
 import com.gustavomp.devtrackerapi.services.project.GetAllProjectsService;
+import com.gustavomp.devtrackerapi.services.project.GetProjectByIdService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ public class ProjectController {
 
     private final CreateProjectService createProjectService;
     private final GetAllProjectsService getAllProjectsService;
+    private final GetProjectByIdService getProjectByIdService;
 
     /* ---------- POST ---------- */
     @PostMapping
@@ -39,6 +42,11 @@ public class ProjectController {
         }
 
         return ResponseEntity.ok(getAllProjectsService.execute());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<GetProjectByIdResponseDto> getProjectById(@PathVariable Long id) {
+        return ResponseEntity.ok(getProjectByIdService.execute(id));
     }
 
 }
