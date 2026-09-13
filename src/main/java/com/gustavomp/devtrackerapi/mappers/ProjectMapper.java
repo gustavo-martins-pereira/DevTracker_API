@@ -1,7 +1,10 @@
 package com.gustavomp.devtrackerapi.mappers;
 
 import com.gustavomp.devtrackerapi.dtos.requests.project.CreateProjectRequestDto;
+import com.gustavomp.devtrackerapi.dtos.responses.client.GetAllClientsResponseDto;
 import com.gustavomp.devtrackerapi.dtos.responses.project.CreateProjectResponseDto;
+import com.gustavomp.devtrackerapi.dtos.responses.project.GetAllProjectsResponseDto;
+import com.gustavomp.devtrackerapi.models.Client;
 import com.gustavomp.devtrackerapi.models.FixedPriceProject;
 import com.gustavomp.devtrackerapi.models.HourlyRateProject;
 import com.gustavomp.devtrackerapi.models.Project;
@@ -44,6 +47,28 @@ public interface ProjectMapper {
 
         if (project instanceof HourlyRateProject hourlyRateProject) {
             return toCreateProjectResponseDto(hourlyRateProject);
+        }
+
+        throw new IllegalArgumentException("Unsupported project type: " + project.getClass().getSimpleName());
+    }
+
+    // Get All Projects
+    @Mapping(target = "clientId", source = "client.id")
+    @Mapping(target = "projectType", constant = "FIXED_PRICE")
+    GetAllProjectsResponseDto toAllProjectsResponseDto(FixedPriceProject project);
+
+    @Mapping(target = "clientId", source = "client.id")
+    @Mapping(target = "projectType", constant = "HOURLY_RATE")
+    GetAllProjectsResponseDto toAllProjectsResponseDto(HourlyRateProject project);
+
+    default GetAllProjectsResponseDto toAllProjectsResponseDto(Project project) {
+
+        if (project instanceof FixedPriceProject fixedPriceProject) {
+            return toAllProjectsResponseDto(fixedPriceProject);
+        }
+
+        if (project instanceof HourlyRateProject hourlyRateProject) {
+            return toAllProjectsResponseDto(hourlyRateProject);
         }
 
         throw new IllegalArgumentException("Unsupported project type: " + project.getClass().getSimpleName());
