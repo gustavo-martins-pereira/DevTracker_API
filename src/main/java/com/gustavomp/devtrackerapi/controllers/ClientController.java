@@ -8,7 +8,7 @@ import com.gustavomp.devtrackerapi.dtos.responses.client.GetClientByNameResponse
 import com.gustavomp.devtrackerapi.dtos.responses.client.UpdateClientByIdResponseDto;
 import com.gustavomp.devtrackerapi.services.client.*;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,22 +17,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/clients")
+@AllArgsConstructor
 public class ClientController {
 
-    @Autowired
-    private CreateClientService createClientService;
-
-    @Autowired
-    private GetAllClientsService getAllClientsService;
-
-    @Autowired
-    private GetClientByNameService getClientByNameService;
-
-    @Autowired
-    private UpdateClientByIdService updateClientByIdService;
-
-    @Autowired
-    private DeleteClientByIdService deleteClientByIdService;
+    private final CreateClientService createClientService;
+    private final GetAllClientsService getAllClientsService;
+    private final GetClientByNameService getClientByNameService;
+    private final UpdateClientByIdService updateClientByIdService;
+    private final DeleteClientByIdService deleteClientByIdService;
 
     /* ---------- POST ---------- */
     @PostMapping

@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = ValidProjectTypeValidator.class)
 public @interface ValidProjectType {
-    String message() default "Invalid monetary field for the selected project type";
+    String message() default "Invalid monetary field for the selected project type. Available Options: [FIXED_PRICE, HOURLY_RATE]";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

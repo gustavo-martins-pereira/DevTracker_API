@@ -15,25 +15,46 @@ public class ValidProjectTypeValidator implements ConstraintValidator<ValidProje
             return false;
         }
 
-        boolean isValid = true;
         context.disableDefaultConstraintViolation();
 
         if ("FIXED_PRICE".equalsIgnoreCase(dto.projectType())) {
             if (dto.budget() == null || dto.budget().compareTo(BigDecimal.ZERO) <= 0) {
-                context.buildConstraintViolationWithTemplate("Budget is required and must be greater than 0 for FIXED_PRICE projects")
+                context.buildConstraintViolationWithTemplate(
+                        "Budget is required and must be greater than 0 for FIXED_PRICE projects"
+                        )
                         .addPropertyNode("budget")
                         .addConstraintViolation();
-                isValid = false;
+
+                return false;
             }
-        } else if ("HOURLY_RATE".equalsIgnoreCase(dto.projectType())) {
-            if (dto.hourlyRate() == null || dto.hourlyRate().compareTo(BigDecimal.ZERO) <= 0) {
-                context.buildConstraintViolationWithTemplate("Hourly rate is required and must be greater than 0 for HOURLY_RATE projects")
-                        .addPropertyNode("hourlyRate")
-                        .addConstraintViolation();
-                isValid = false;
-            }
+
+            return true;
         }
 
-        return isValid;
+        if ("HOURLY_RATE".equalsIgnoreCase(dto.projectType())) {
+
+            if (dto.hourlyRate() == null
+                    || dto.hourlyRate().compareTo(BigDecimal.ZERO) <= 0) {
+
+                context.buildConstraintViolationWithTemplate(
+                                "Hourly rate is required and must be greater than 0 for HOURLY_RATE projects"
+                        )
+                        .addPropertyNode("hourlyRate")
+                        .addConstraintViolation();
+
+                return false;
+            }
+
+            return true;
+        }
+
+        // Invalid project type
+        context.buildConstraintViolationWithTemplate("Invalid project type '" + dto.projectType()
+                        + "'. Available options: [FIXED_PRICE, HOURLY_RATE]"
+                )
+                .addPropertyNode("projectType")
+                .addConstraintViolation();
+
+        return false;
     }
 }

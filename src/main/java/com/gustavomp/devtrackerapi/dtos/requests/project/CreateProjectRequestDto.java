@@ -17,6 +17,10 @@ public record CreateProjectRequestDto(
         @Size(min = 5, message = "The 'description' must be greater than 4 characters")
         String description,
 
+        @NotNull(message = "\"The 'workedHours' is required\"")
+        @PositiveOrZero(message = "The 'workedHours' must be >= than 0")
+        Integer workedHours,
+
         @NotNull(message = "The 'startDate' is required")
         LocalDate startDate,
 
@@ -24,18 +28,13 @@ public record CreateProjectRequestDto(
         LocalDate dueDate,
 
         @NotNull(message = "The 'projectStatus' is required")
-        @Pattern(
-                regexp = "^(IN_PROGRESS|COMPLETED|CANCELLED)$",
-                message = "The 'projectStatus' must be either 'IN_PROGRESS', 'COMPLETED' or 'CANCELLED'"
-        )
         ProjectStatus projectStatus,
 
         @NotNull(message = "The 'clientId' is required")
         @Positive(message = "The 'clientId' must be a positive ID")
         Long clientId,
 
-        @NotBlank(message = "The 'projectType' is required")
-        @Pattern(regexp = "^(FIXED_PRICE|HOURLY_RATE)$", message = "The 'projectType' must be either 'FIXED_PRICE' or 'HOURLY_RATE'")
+        @NotBlank(message = "The 'projectType' is required. Available Options: [FIXED_PRICE, HOURLY_RATE]")
         String projectType,
 
         @Positive(message = "The 'budget' must be greater than 0")
