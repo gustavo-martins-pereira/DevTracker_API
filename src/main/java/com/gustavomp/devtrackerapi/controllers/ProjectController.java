@@ -3,6 +3,7 @@ package com.gustavomp.devtrackerapi.controllers;
 import com.gustavomp.devtrackerapi.dtos.requests.project.CreateProjectRequestDto;
 import com.gustavomp.devtrackerapi.dtos.responses.project.CreateProjectResponseDto;
 import com.gustavomp.devtrackerapi.dtos.responses.project.GetAllProjectsResponseDto;
+import com.gustavomp.devtrackerapi.models.enums.ProjectStatus;
 import com.gustavomp.devtrackerapi.services.client.*;
 import com.gustavomp.devtrackerapi.services.project.CreateProjectService;
 import com.gustavomp.devtrackerapi.services.project.GetAllProjectsService;
@@ -32,7 +33,11 @@ public class ProjectController {
 
     /* ---------- GET ---------- */
     @GetMapping
-    public ResponseEntity<List<GetAllProjectsResponseDto>> getAllProjects() {
+    public ResponseEntity<List<GetAllProjectsResponseDto>> getAllProjects(@RequestParam(required = false) ProjectStatus projectStatus) {
+        if (projectStatus != null) {
+            return ResponseEntity.ok(getAllProjectsService.execute(projectStatus));
+        }
+
         return ResponseEntity.ok(getAllProjectsService.execute());
     }
 

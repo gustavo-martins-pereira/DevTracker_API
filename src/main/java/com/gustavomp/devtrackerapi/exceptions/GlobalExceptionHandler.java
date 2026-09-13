@@ -8,6 +8,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import tools.jackson.databind.exc.InvalidFormatException;
 
 import java.time.LocalDateTime;
@@ -26,6 +27,29 @@ public class GlobalExceptionHandler {
         }
 
         return buildResponseEntity(HttpStatus.BAD_REQUEST, fieldErrors);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, Object>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        Map<String, String> errors = new HashMap<>();
+        Class<?> requiredType = ex.getRequiredType();
+
+        if (requiredType != null && requiredType.isEnum()) {
+            String acceptedValues = String.join(", ",
+                    Arrays.stream(requiredType.getEnumConstants())
+                            .map(Object::toString)
+                            .toList());
+
+            errors.put(ex.getName(), String.format(
+                    "Invalid value '%s'. Accepted values are: %s",
+                    ex.getValue(),
+                    acceptedValues
+            ));
+        } else {
+            errors.put(ex.getName(), String.format("Invalid value '%s'", ex.getValue()));
+        }
+
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, errors);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -71,10 +95,10 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
-        return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
+//        return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+//    }
 
     private ResponseEntity<Map<String, Object>> buildResponseEntity(HttpStatus status, Object errorContent) {
         Map<String, Object> response = Map.of(
