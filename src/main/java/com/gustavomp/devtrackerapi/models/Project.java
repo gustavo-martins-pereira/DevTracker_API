@@ -18,6 +18,7 @@ import java.time.LocalDate;
 public abstract class Project {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String name;

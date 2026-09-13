@@ -18,6 +18,7 @@ import java.time.LocalDate;
 public class FinancialTransaction {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String description;
