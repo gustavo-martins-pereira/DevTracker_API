@@ -1,14 +1,17 @@
 package com.gustavomp.devtrackerapi.controllers;
 
 import com.gustavomp.devtrackerapi.dtos.requests.project.CreateProjectRequestDto;
+import com.gustavomp.devtrackerapi.dtos.requests.project.UpdateProjectByIdRequestDto;
 import com.gustavomp.devtrackerapi.dtos.responses.project.CreateProjectResponseDto;
 import com.gustavomp.devtrackerapi.dtos.responses.project.GetAllProjectsResponseDto;
 import com.gustavomp.devtrackerapi.dtos.responses.project.GetProjectByIdResponseDto;
+import com.gustavomp.devtrackerapi.dtos.responses.project.UpdateProjectByIdResponseDto;
 import com.gustavomp.devtrackerapi.models.enums.ProjectStatus;
 import com.gustavomp.devtrackerapi.services.client.*;
 import com.gustavomp.devtrackerapi.services.project.CreateProjectService;
 import com.gustavomp.devtrackerapi.services.project.GetAllProjectsService;
 import com.gustavomp.devtrackerapi.services.project.GetProjectByIdService;
+import com.gustavomp.devtrackerapi.services.project.UpdateProjectByIdService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +28,7 @@ public class ProjectController {
     private final CreateProjectService createProjectService;
     private final GetAllProjectsService getAllProjectsService;
     private final GetProjectByIdService getProjectByIdService;
+    private final UpdateProjectByIdService updateProjectByIdService;
 
     /* ---------- POST ---------- */
     @PostMapping
@@ -47,6 +51,14 @@ public class ProjectController {
     @GetMapping("/{id}")
     public ResponseEntity<GetProjectByIdResponseDto> getProjectById(@PathVariable Long id) {
         return ResponseEntity.ok(getProjectByIdService.execute(id));
+    }
+
+    /* ---------- PUT ---------- */
+    @PutMapping(params = "id")
+    public ResponseEntity<UpdateProjectByIdResponseDto> updateProjectById(@RequestParam Long id, @RequestBody @Valid UpdateProjectByIdRequestDto updateProjectByIdRequestDto) {
+        UpdateProjectByIdResponseDto updateProjectByIdResponseDto = updateProjectByIdService.execute(id, updateProjectByIdRequestDto);
+
+        return ResponseEntity.ok(updateProjectByIdResponseDto);
     }
 
 }
