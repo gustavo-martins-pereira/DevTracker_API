@@ -7,24 +7,22 @@ import com.gustavomp.devtrackerapi.mappers.ClientMapper;
 import com.gustavomp.devtrackerapi.models.Client;
 import com.gustavomp.devtrackerapi.repositories.ClientRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UpdateClientByIdService {
 
-    @Autowired
-    private ClientRepository clientRepository;
-
-    @Autowired
-    private ClientMapper clientMapper;
+    private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
     public UpdateClientByIdResponseDto execute(Long id, UpdateClientByIdRequestDto updateClientByIdRequestDto) {
-        Optional<Client> optionalClient = clientRepository.findByIdAndActiveIsTrue(id);
-        if (optionalClient.isEmpty()) throw new EntityNotFoundException("Client with id " + id + " not found");
+        Optional<Client> oldClient = clientRepository.findByIdAndActiveIsTrue(id);
+        if (oldClient.isEmpty()) throw new EntityNotFoundException("Client with id " + id + " not found");
 
         Optional<Client> existingClient = clientRepository.findByNameOrEmailOrPhone(
                 updateClientByIdRequestDto.name(),
@@ -34,10 +32,7 @@ public class UpdateClientByIdService {
             throw new EntityAlreadyExistsException("Client with 'name' or 'email' or 'phone' already exists");
         }
 
-        Client client = optionalClient.get();
-        client.setName(updateClientByIdRequestDto.name());
-        client.setEmail(updateClientByIdRequestDto.email());
-        client.setPhone(updateClientByIdRequestDto.phone());
+        Client client = clientMapper.updateClientByIdRequestDtoToEntity(updateClientByIdRequestDto, oldClient.get());
 
         Client updatedClient = clientRepository.save(client);
 

@@ -9,7 +9,6 @@ public record UpdateClientByIdRequestDto(
         @Email(message = "Invalid email format")
         String email,
 
-        @NotBlank(message = "The 'phone' couldn't be blank")
         @Pattern(
                 regexp = "[0-9]{8}",
                 message = "Invalid phone number format (expected: XXXXXXXX)"

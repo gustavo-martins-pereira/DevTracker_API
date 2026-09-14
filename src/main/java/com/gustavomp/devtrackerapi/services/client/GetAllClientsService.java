@@ -4,25 +4,23 @@ import com.gustavomp.devtrackerapi.dtos.responses.client.GetAllClientsResponseDt
 import com.gustavomp.devtrackerapi.mappers.ClientMapper;
 import com.gustavomp.devtrackerapi.models.Client;
 import com.gustavomp.devtrackerapi.repositories.ClientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class GetAllClientsService {
 
-    @Autowired
-    private ClientRepository clientRepository;
-
-    @Autowired
-    private ClientMapper clientMapper;
+    private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
     public List<GetAllClientsResponseDto> execute() {
         return clientRepository.findAll()
                 .stream()
                 .filter(Client::getActive)
-                .map(client -> clientMapper.toAllClientsResponseDto(client))
+                .map(clientMapper::toAllClientsResponseDto)
                 .toList();
     }
 

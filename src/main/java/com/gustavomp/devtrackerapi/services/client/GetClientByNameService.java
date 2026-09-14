@@ -5,19 +5,17 @@ import com.gustavomp.devtrackerapi.mappers.ClientMapper;
 import com.gustavomp.devtrackerapi.models.Client;
 import com.gustavomp.devtrackerapi.repositories.ClientRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class GetClientByNameService {
 
-    @Autowired
-    private ClientRepository clientRepository;
-
-    @Autowired
-    private ClientMapper clientMapper;
+    private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
     public GetClientByNameResponseDto execute(String name) {
         Optional<Client> optionalClient = clientRepository.findByNameAndActiveIsTrue(name);
