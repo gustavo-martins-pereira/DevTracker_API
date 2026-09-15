@@ -2,16 +2,11 @@ package com.gustavomp.devtrackerapi.controllers;
 
 import com.gustavomp.devtrackerapi.dtos.requests.project.CreateProjectRequestDto;
 import com.gustavomp.devtrackerapi.dtos.requests.project.UpdateProjectByIdRequestDto;
-import com.gustavomp.devtrackerapi.dtos.responses.project.CreateProjectResponseDto;
-import com.gustavomp.devtrackerapi.dtos.responses.project.GetAllProjectsResponseDto;
-import com.gustavomp.devtrackerapi.dtos.responses.project.GetProjectByIdResponseDto;
-import com.gustavomp.devtrackerapi.dtos.responses.project.UpdateProjectByIdResponseDto;
+import com.gustavomp.devtrackerapi.dtos.requests.project.UpdateProjectStatusByIdRequestDto;
+import com.gustavomp.devtrackerapi.dtos.responses.project.*;
 import com.gustavomp.devtrackerapi.models.enums.ProjectStatus;
 import com.gustavomp.devtrackerapi.services.client.*;
-import com.gustavomp.devtrackerapi.services.project.CreateProjectService;
-import com.gustavomp.devtrackerapi.services.project.GetAllProjectsService;
-import com.gustavomp.devtrackerapi.services.project.GetProjectByIdService;
-import com.gustavomp.devtrackerapi.services.project.UpdateProjectByIdService;
+import com.gustavomp.devtrackerapi.services.project.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,6 +24,7 @@ public class ProjectController {
     private final GetAllProjectsService getAllProjectsService;
     private final GetProjectByIdService getProjectByIdService;
     private final UpdateProjectByIdService updateProjectByIdService;
+    private final UpdateProjectStatusByIdService updateProjectStatusByIdService;
 
     /* ---------- POST ---------- */
     @PostMapping
@@ -59,6 +55,14 @@ public class ProjectController {
         UpdateProjectByIdResponseDto updateProjectByIdResponseDto = updateProjectByIdService.execute(id, updateProjectByIdRequestDto);
 
         return ResponseEntity.ok(updateProjectByIdResponseDto);
+    }
+
+    /* ---------- PATCH ---------- */
+    @PatchMapping(params = "id")
+    public ResponseEntity<UpdateProjectStatusByIdResponseDto> updateProjectStatusById(@RequestParam Long id, @RequestBody @Valid UpdateProjectStatusByIdRequestDto updateProjectStatusByIdRequestDto) {
+        UpdateProjectStatusByIdResponseDto updateProjectStatusByIdResponseDto = updateProjectStatusByIdService.execute(id, updateProjectStatusByIdRequestDto);
+
+        return ResponseEntity.ok(updateProjectStatusByIdResponseDto);
     }
 
 }

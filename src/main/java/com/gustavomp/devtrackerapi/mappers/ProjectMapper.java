@@ -2,19 +2,18 @@ package com.gustavomp.devtrackerapi.mappers;
 
 import com.gustavomp.devtrackerapi.dtos.requests.project.CreateProjectRequestDto;
 import com.gustavomp.devtrackerapi.dtos.requests.project.UpdateProjectByIdRequestDto;
-import com.gustavomp.devtrackerapi.dtos.responses.project.CreateProjectResponseDto;
-import com.gustavomp.devtrackerapi.dtos.responses.project.GetAllProjectsResponseDto;
-import com.gustavomp.devtrackerapi.dtos.responses.project.GetProjectByIdResponseDto;
-import com.gustavomp.devtrackerapi.dtos.responses.project.UpdateProjectByIdResponseDto;
+import com.gustavomp.devtrackerapi.dtos.requests.project.UpdateProjectStatusByIdRequestDto;
+import com.gustavomp.devtrackerapi.dtos.responses.project.*;
 import com.gustavomp.devtrackerapi.models.FixedPriceProject;
 import com.gustavomp.devtrackerapi.models.HourlyRateProject;
 import com.gustavomp.devtrackerapi.models.Project;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(
+        componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface ProjectMapper {
 
     // Create Project
@@ -121,5 +120,13 @@ public interface ProjectMapper {
 
         throw new IllegalArgumentException("Unsupported project type: " + project.getClass().getSimpleName());
     }
+
+    // Update Project Status by ID
+    // Request
+    Project toEntity(UpdateProjectStatusByIdRequestDto dto, @MappingTarget Project project);
+
+    // Response
+    @Mapping(target = "clientId", source = "client.id")
+    UpdateProjectStatusByIdResponseDto toUpdateProjectStatusByIdResponseDto(Project project);
 
 }

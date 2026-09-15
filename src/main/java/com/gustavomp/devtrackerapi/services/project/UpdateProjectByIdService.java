@@ -28,9 +28,9 @@ public class UpdateProjectByIdService {
 
         Project project = projectMapper.toEntity(updateProjectByIdRequestDto, oldProject.get());
 
-        Project updatedClient = projectRepository.save(project);
+        Project updatedProject = projectRepository.save(project);
 
-        return projectMapper.toUpdateProjectByIdResponseDto(updatedClient);
+        return projectMapper.toUpdateProjectByIdResponseDto(updatedProject);
     }
 
 }
