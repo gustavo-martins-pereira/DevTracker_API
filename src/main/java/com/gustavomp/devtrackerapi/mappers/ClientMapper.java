@@ -15,7 +15,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface ClientMapper {
 
     // Create Client
-    Client createClientRequestDtoToEntity(CreateClientRequestDto dto);
+    Client toEntity(CreateClientRequestDto dto);
     CreateClientResponseDto toCreateClientResponseDto(Client entity);
 
     // Get All Clients
@@ -25,7 +25,7 @@ public interface ClientMapper {
     GetClientByNameResponseDto toGetClientByNameResponseDto(Client entity);
 
     // Update Client by ID
-    Client updateClientByIdRequestDtoToEntity(UpdateClientByIdRequestDto dto, @MappingTarget Client entity);
+    Client toEntity(UpdateClientByIdRequestDto dto, @MappingTarget Client entity);
     UpdateClientByIdResponseDto toUpdateClientByIdResponseDto(Client entity);
 
 }

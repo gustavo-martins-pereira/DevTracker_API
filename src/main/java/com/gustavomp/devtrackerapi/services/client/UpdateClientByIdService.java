@@ -32,7 +32,7 @@ public class UpdateClientByIdService {
             throw new EntityAlreadyExistsException("Client with 'name' or 'email' or 'phone' already exists");
         }
 
-        Client client = clientMapper.updateClientByIdRequestDtoToEntity(updateClientByIdRequestDto, oldClient.get());
+        Client client = clientMapper.toEntity(updateClientByIdRequestDto, oldClient.get());
 
         Client updatedClient = clientRepository.save(client);
 

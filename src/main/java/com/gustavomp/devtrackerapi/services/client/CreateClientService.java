@@ -30,7 +30,7 @@ public class CreateClientService {
             );
         }
 
-        Client client = clientMapper.createClientRequestDtoToEntity(createClientRequestDto);
+        Client client = clientMapper.toEntity(createClientRequestDto);
 
         Client savedClient = clientRepository.save(client);
 
