@@ -5,6 +5,7 @@ import com.gustavomp.devtrackerapi.dtos.responses.financialtransaction.Create_FT
 import com.gustavomp.devtrackerapi.dtos.responses.financialtransaction.GetAll_FT_ByProjectIdResponseDto;
 import com.gustavomp.devtrackerapi.dtos.responses.financialtransaction.Get_FT_ByIdResponseDto;
 import com.gustavomp.devtrackerapi.services.financialtransaction.Create_FT_Service;
+import com.gustavomp.devtrackerapi.services.financialtransaction.Delete_FT_ByIdService;
 import com.gustavomp.devtrackerapi.services.financialtransaction.GetAll_FT_ByProjectIdService;
 import com.gustavomp.devtrackerapi.services.financialtransaction.Get_FT_ByIdService;
 import jakarta.validation.Valid;
@@ -23,6 +24,7 @@ public class FinancialTransactionController {
     private final Create_FT_Service create_FT_Service;
     private final GetAll_FT_ByProjectIdService getAll_FT_ByProjectIdService;
     private final Get_FT_ByIdService get_FT_ByIdService;
+    private final Delete_FT_ByIdService delete_FT_ByIdService;
 
     /* ---------- POST ---------- */
     @PostMapping
@@ -45,6 +47,14 @@ public class FinancialTransactionController {
         Get_FT_ByIdResponseDto getFTByIdResponseDto = get_FT_ByIdService.execute(id);
 
         return new ResponseEntity<>(getFTByIdResponseDto, HttpStatus.OK);
+    }
+
+    /* ---------- DELETE ---------- */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFinancialTransactionById(@PathVariable Long id) {
+        delete_FT_ByIdService.execute(id);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
