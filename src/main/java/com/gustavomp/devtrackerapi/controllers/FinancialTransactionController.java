@@ -9,6 +9,7 @@ import com.gustavomp.devtrackerapi.services.financialtransaction.Delete_FT_ByIdS
 import com.gustavomp.devtrackerapi.services.financialtransaction.GetAll_FT_ByProjectIdService;
 import com.gustavomp.devtrackerapi.services.financialtransaction.Get_FT_ByIdService;
 import jakarta.validation.Valid;
+import com.gustavomp.devtrackerapi.models.enums.Currency;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,15 +37,15 @@ public class FinancialTransactionController {
 
     /* ---------- GET ---------- */
     @GetMapping(params = "projectId")
-    public ResponseEntity<List<GetAll_FT_ByProjectIdResponseDto>> getAllFinancialTransactionByProjectId(@RequestParam Long projectId) {
-        List<GetAll_FT_ByProjectIdResponseDto> financialTransactions = getAll_FT_ByProjectIdService.execute(projectId);
+    public ResponseEntity<List<GetAll_FT_ByProjectIdResponseDto>> getAllFinancialTransactionByProjectId(@RequestParam Long projectId, @RequestParam(defaultValue = "BRL") Currency currency) {
+        List<GetAll_FT_ByProjectIdResponseDto> financialTransactions = getAll_FT_ByProjectIdService.execute(projectId, currency);
 
         return new ResponseEntity<>(financialTransactions, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Get_FT_ByIdResponseDto> getFinancialTransactionById(@PathVariable Long id) {
-        Get_FT_ByIdResponseDto getFTByIdResponseDto = get_FT_ByIdService.execute(id);
+    public ResponseEntity<Get_FT_ByIdResponseDto> getFinancialTransactionById(@PathVariable Long id, @RequestParam(defaultValue = "BRL") Currency currency) {
+        Get_FT_ByIdResponseDto getFTByIdResponseDto = get_FT_ByIdService.execute(id, currency);
 
         return new ResponseEntity<>(getFTByIdResponseDto, HttpStatus.OK);
     }
@@ -58,3 +59,4 @@ public class FinancialTransactionController {
     }
 
 }
+

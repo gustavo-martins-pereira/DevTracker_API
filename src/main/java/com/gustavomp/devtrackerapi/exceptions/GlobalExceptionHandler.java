@@ -95,6 +95,11 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatus.CONFLICT, ex.getMessage());
     }
 
+    @ExceptionHandler(CurrencyProviderException.class)
+    public ResponseEntity<Map<String, Object>> handleCurrencyProvider(CurrencyProviderException ex) {
+        return buildResponseEntity(HttpStatus.BAD_GATEWAY, ex.getMessage());
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException ex) {
         return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
