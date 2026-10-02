@@ -25,9 +25,7 @@ public class CreateClientService {
                 createClientRequestDto.phone()
         );
         if (existingClient.isPresent()) {
-            throw new EntityAlreadyExistsException(
-                    "A client with the 'name', 'email' or 'phone' already exists."
-            );
+            throw new EntityAlreadyExistsException("A client with the 'name', 'email' or 'phone' already exists.");
         }
 
         Client client = clientMapper.toEntity(createClientRequestDto);
