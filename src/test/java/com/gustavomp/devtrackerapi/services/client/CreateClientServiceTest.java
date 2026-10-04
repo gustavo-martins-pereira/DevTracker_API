@@ -6,6 +6,7 @@ import com.gustavomp.devtrackerapi.exceptions.EntityAlreadyExistsException;
 import com.gustavomp.devtrackerapi.mappers.ClientMapper;
 import com.gustavomp.devtrackerapi.models.Client;
 import com.gustavomp.devtrackerapi.repositories.ClientRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Create Client Service")
 public class CreateClientServiceTest {
 
     @Mock
@@ -31,11 +33,16 @@ public class CreateClientServiceTest {
     @InjectMocks
     private CreateClientService createClientService;
 
-    // GIVEN No matching clients exists
-    // WHEN I attempt to create a client
-    // THEN The client is saved & it's response is returned
+    /**
+     * Verifies successful client creation.
+     *
+     * <p><b>GIVEN:</b> No client matches the requested name, email, or phone.
+     * <br><b>WHEN:</b> The service executes the creation request.
+     * <br><b>THEN:</b> The client is saved and its response is returned.
+     */
     @Test
-    void accept_client_creation_when_no_matching_client_exists() {
+    @DisplayName("Create Client | No matching client | Saves and returns the saved client")
+    void execute_whenNoMatchingClientExists_shouldReturnCreatedClient() {
         // Arrange
         CreateClientRequestDto request = new CreateClientRequestDto(
                 "Ana",
@@ -72,14 +79,23 @@ public class CreateClientServiceTest {
 
         // Assert
         assertEquals(expectedResponse, actualResponse);
+
+        verify(clientMapper).toEntity(request);
+        verify(clientMapper).toCreateClientResponseDto(savedClient);
         verify(clientRepository).save(clientToSave);
     }
 
-    // GIVEN The repository finds an existing client
-    // WHEN I attempt to create a client
-    // THEN The service rejects the request and does not save anything.
+    /**
+     * Verifies rejection of a duplicate client.
+     *
+     * <p><b>GIVEN:</b> A client matches the requested name, email, or phone.
+     * <br><b>WHEN:</b> The service executes the creation request.
+     * <br><b>THEN:</b> EntityAlreadyExistsException is thrown,
+     * and neither mapping nor saving occurs.
+     */
     @Test
-    void rejects_client_creation_when_client_already_exists() {
+    @DisplayName("Create Client | Matching client exists | Returns EntityAlreadyExistsException ")
+    void execute_whenMatchingClientExists_shouldThrowEntityAlreadyExistsException() {
         // Arrange
         CreateClientRequestDto request = new CreateClientRequestDto(
                 "Ana",
@@ -98,6 +114,9 @@ public class CreateClientServiceTest {
 
         // Act & Assert
         assertThrows(EntityAlreadyExistsException.class, () -> createClientService.execute(request));
+
+        verifyNoInteractions(clientMapper);
+
         verify(clientRepository, never()).save(any());
     }
 
