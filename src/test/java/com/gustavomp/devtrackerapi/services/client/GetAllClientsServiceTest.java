@@ -1,10 +1,10 @@
 package com.gustavomp.devtrackerapi.services.client;
 
-import com.gustavomp.devtrackerapi.dtos.requests.client.CreateClientRequestDto;
 import com.gustavomp.devtrackerapi.dtos.responses.client.GetAllClientsResponseDto;
 import com.gustavomp.devtrackerapi.mappers.ClientMapper;
 import com.gustavomp.devtrackerapi.models.Client;
 import com.gustavomp.devtrackerapi.repositories.ClientRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Get All Clients Service")
 public class GetAllClientsServiceTest {
 
     @Mock
@@ -29,14 +30,8 @@ public class GetAllClientsServiceTest {
     @InjectMocks
     private GetAllClientsService getAllClientsService;
 
-    /**
-     * Verifies successful returned clients.
-     *
-     * <p><b>GIVEN:</b> Clients exists.
-     * <br><b>WHEN:</b> Getting all the clients with <i>getActive</i> is <b>true</b>.
-     * <br><b>THEN:</b> The clients are returned.
-     */
     @Test
+    @DisplayName("Get All Clients | With Active/Innactive clients | Returns the active clients")
     void execute_whenClientsExists_shouldReturnClients() {
         // Arrange
         Client activeClient = new Client(1L, "Ana", "ana@example.com", "12345678", true);
@@ -64,14 +59,8 @@ public class GetAllClientsServiceTest {
         verify(clientMapper, never()).toAllClientsResponseDto(inactiveClient);
     }
 
-    /**
-     * Verifies successful returned clients (Empty List).
-     *
-     * <p><b>GIVEN:</b> Clients doesn't exist.
-     * <br><b>WHEN:</b> Getting all the clients with <i>getActive</i> is <b>true</b>.
-     * <br><b>THEN:</b> No clients are returned.
-     */
     @Test
+    @DisplayName("Get All Clients | No clients exists | Returns an empty clients list")
     void execute_whenClientsNotExists_shouldReturnEmptyList() {
         // Arrange
         when(clientRepository.findAll()).thenReturn(List.of());

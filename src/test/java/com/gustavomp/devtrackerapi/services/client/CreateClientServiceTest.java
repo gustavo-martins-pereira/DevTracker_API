@@ -33,13 +33,6 @@ public class CreateClientServiceTest {
     @InjectMocks
     private CreateClientService createClientService;
 
-    /**
-     * Verifies successful client creation.
-     *
-     * <p><b>GIVEN:</b> No client matches the requested name, email, or phone.
-     * <br><b>WHEN:</b> The service executes the creation request.
-     * <br><b>THEN:</b> The client is saved and its response is returned.
-     */
     @Test
     @DisplayName("Create Client | No matching client | Saves and returns the saved client")
     void execute_whenNoMatchingClientExists_shouldReturnCreatedClient() {
@@ -85,14 +78,6 @@ public class CreateClientServiceTest {
         verify(clientRepository).save(clientToSave);
     }
 
-    /**
-     * Verifies rejection of a duplicate client.
-     *
-     * <p><b>GIVEN:</b> A client matches the requested name, email, or phone.
-     * <br><b>WHEN:</b> The service executes the creation request.
-     * <br><b>THEN:</b> EntityAlreadyExistsException is thrown,
-     * and neither mapping nor saving occurs.
-     */
     @Test
     @DisplayName("Create Client | Matching client exists | Returns EntityAlreadyExistsException ")
     void execute_whenMatchingClientExists_shouldThrowEntityAlreadyExistsException() {
