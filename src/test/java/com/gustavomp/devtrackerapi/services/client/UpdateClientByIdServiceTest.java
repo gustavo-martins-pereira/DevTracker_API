@@ -7,6 +7,7 @@ import com.gustavomp.devtrackerapi.mappers.ClientMapper;
 import com.gustavomp.devtrackerapi.models.Client;
 import com.gustavomp.devtrackerapi.repositories.ClientRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,24 +34,30 @@ public class UpdateClientByIdServiceTest {
     @InjectMocks
     private UpdateClientByIdService updateClientByIdService;
 
-    @Test
-    @DisplayName("Update Client | Successfully | Saves and returns the updated client")
-    void execute_whenClientIsFounded_shouldReturnUpdatedClient() {
-        // Arrange
-        UpdateClientByIdRequestDto requestDto = new UpdateClientByIdRequestDto(
+    private UpdateClientByIdRequestDto request;
+    private Client oldClient;
+
+    @BeforeEach
+    void setUp() {
+        request = new UpdateClientByIdRequestDto(
                 "Bob",
                 "bob@example.com",
                 "87654321"
         );
+        oldClient = new Client(1L, "Ana", "ana@example.com", "12345678", true);
+    }
 
-        Client oldClient = new Client(1L, "Ana", "ana@example.com", "12345678", true);
+    @Test
+    @DisplayName("Update Client | Successfully | Saves and returns the updated client")
+    void execute_whenClientIsFounded_shouldReturnUpdatedClient() {
+        // Arrange
         when(clientRepository.findByIdAndActiveIsTrue(1L)).thenReturn(Optional.of(oldClient));
 
-        when(clientRepository.findByNameOrEmailOrPhone(requestDto.name(), requestDto.email(), requestDto.phone()))
+        when(clientRepository.findByNameOrEmailOrPhone(request.name(), request.email(), request.phone()))
                 .thenReturn(Optional.empty());
 
         Client newClient = new Client(1L, "Bob", "bob@example.com", "87654321", true);
-        when(clientMapper.toEntity(requestDto, oldClient)).thenReturn(newClient);
+        when(clientMapper.toEntity(request, oldClient)).thenReturn(newClient);
 
         Client updatedClient = new Client(1L, "Bob", "bob@example.com", "87654321", true);
         when(clientRepository.save(newClient)).thenReturn(updatedClient);
@@ -65,12 +72,12 @@ public class UpdateClientByIdServiceTest {
         when(clientMapper.toUpdateClientByIdResponseDto(updatedClient)).thenReturn(expectedResponse);
 
         // Act
-        var actualResponse = updateClientByIdService.execute(1L, requestDto);
+        var actualResponse = updateClientByIdService.execute(1L, request);
 
         // Assert
         assertEquals(expectedResponse, actualResponse);
 
-        verify(clientMapper).toEntity(requestDto, oldClient);
+        verify(clientMapper).toEntity(request, oldClient);
         verify(clientRepository).save(newClient);
         verify(clientMapper).toUpdateClientByIdResponseDto(updatedClient);
     }
@@ -79,16 +86,10 @@ public class UpdateClientByIdServiceTest {
     @DisplayName("Update Client | Client not found | Throws EntityNotFoundException")
     void execute_whenClientIsNotFounded_shouldThrowEntityNotFoundException() {
         // Arrange
-        UpdateClientByIdRequestDto requestDto = new UpdateClientByIdRequestDto(
-                "Bob",
-                "bob@example.com",
-                "87654321"
-        );
-
         when(clientRepository.findByIdAndActiveIsTrue(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(EntityNotFoundException.class, () -> updateClientByIdService.execute(1L, requestDto));
+        assertThrows(EntityNotFoundException.class, () -> updateClientByIdService.execute(1L, request));
 
         verify(clientRepository).findByIdAndActiveIsTrue(1L);
         verify(clientRepository, never()).save(any());
@@ -99,26 +100,20 @@ public class UpdateClientByIdServiceTest {
     @DisplayName("Update Client | Other Client with same name/email/phone  | Throws EntityAlreadyExistsException")
     void execute_whenOtherClientIsFounded_shouldThrowEntityAlreadyExistsException() {
         // Arrange
-        UpdateClientByIdRequestDto requestDto = new UpdateClientByIdRequestDto(
-                "Bob",
-                "bob@example.com",
-                "87654321"
-        );
-
-        Client oldClient = new Client(1L, "Ana", "ana@example.com", "12345678", true);
         when(clientRepository.findByIdAndActiveIsTrue(1L)).thenReturn(Optional.of(oldClient));
 
         Client existingClient = new Client(2L, "Bob", "duplicate@example.com", "23456789", true);
-        when(clientRepository.findByNameOrEmailOrPhone(requestDto.name(), requestDto.email(), requestDto.phone()))
+        when(clientRepository.findByNameOrEmailOrPhone(request.name(), request.email(), request.phone()))
                 .thenReturn(Optional.of(existingClient));
 
         // Act & Assert
-        assertThrows(EntityAlreadyExistsException.class, () -> updateClientByIdService.execute(1L, requestDto));
+        assertThrows(EntityAlreadyExistsException.class, () -> updateClientByIdService.execute(1L, request));
 
         verify(clientRepository).findByIdAndActiveIsTrue(1L);
-        verify(clientRepository).findByNameOrEmailOrPhone(requestDto.name(), requestDto.email(), requestDto.phone());
+        verify(clientRepository).findByNameOrEmailOrPhone(request.name(), request.email(), request.phone());
         verify(clientRepository, never()).save(any());
         verifyNoInteractions(clientMapper);
     }
 
 }
+

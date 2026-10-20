@@ -2,6 +2,7 @@ package com.gustavomp.devtrackerapi.services.project;
 
 import com.gustavomp.devtrackerapi.dtos.requests.project.CreateProjectRequestDto;
 import com.gustavomp.devtrackerapi.dtos.responses.project.CreateProjectResponseDto;
+import com.gustavomp.devtrackerapi.exceptions.EntityAlreadyExistsException;
 import com.gustavomp.devtrackerapi.mappers.ProjectMapper;
 import com.gustavomp.devtrackerapi.models.Client;
 import com.gustavomp.devtrackerapi.models.Project;
@@ -27,7 +28,7 @@ public class CreateProjectService {
 
         Optional<Project> existingProject = projectRepository.findByName(createProjectRequestDto.name());
         if (existingProject.isPresent()) {
-            throw new EntityNotFoundException("Project with name " + createProjectRequestDto.name() + " already exists");
+            throw new EntityAlreadyExistsException("Project with name " + createProjectRequestDto.name() + " already exists");
         }
 
         Project project = projectMapper.toEntity(createProjectRequestDto);

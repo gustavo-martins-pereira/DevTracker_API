@@ -6,6 +6,7 @@ import com.gustavomp.devtrackerapi.exceptions.EntityAlreadyExistsException;
 import com.gustavomp.devtrackerapi.mappers.ClientMapper;
 import com.gustavomp.devtrackerapi.models.Client;
 import com.gustavomp.devtrackerapi.repositories.ClientRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,17 +34,22 @@ public class CreateClientServiceTest {
     @InjectMocks
     private CreateClientService createClientService;
 
-    @Test
-    @DisplayName("Create Client | No matching client | Saves and returns the saved client")
-    void execute_whenNoMatchingClientExists_shouldReturnCreatedClient() {
-        // Arrange
-        CreateClientRequestDto request = new CreateClientRequestDto(
+    private CreateClientRequestDto request;
+
+    @BeforeEach
+    void setUp() {
+        request = new CreateClientRequestDto(
                 "Ana",
                 "ana@example.com",
                 "12345678",
                 true
         );
+    }
 
+    @Test
+    @DisplayName("Create Client | No matching client | Saves and returns the saved client")
+    void execute_whenNoMatchingClientExists_shouldReturnCreatedClient() {
+        // Arrange
         when(clientRepository.findByNameOrEmailOrPhone(
                 request.name(),
                 request.email(),
@@ -82,13 +88,6 @@ public class CreateClientServiceTest {
     @DisplayName("Create Client | Matching client exists | Returns EntityAlreadyExistsException ")
     void execute_whenMatchingClientExists_shouldThrowEntityAlreadyExistsException() {
         // Arrange
-        CreateClientRequestDto request = new CreateClientRequestDto(
-                "Ana",
-                "ana@example.com",
-                "12345678",
-                true
-        );
-
         Client existingClient = new Client();
 
         when(clientRepository.findByNameOrEmailOrPhone(
@@ -106,3 +105,4 @@ public class CreateClientServiceTest {
     }
 
 }
+
