@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Client Controller")
-class ClientControllerTest {
+public class ClientControllerTest {
 
     @InjectMocks
     private ClientController clientController;
@@ -146,6 +146,8 @@ class ClientControllerTest {
     }
 
     @Test
+
+    @DisplayName("Create Client | Malformed JSON | Returns 400 Bad Request")
     void createClient_whenMalformedJson_shouldReturnBadRequest() throws Exception {
         // Act & Assert
         mockMvc.perform(post("/clients").contentType(MediaType.APPLICATION_JSON).content("{invalid"))
@@ -157,6 +159,7 @@ class ClientControllerTest {
 
     /* ---------- Get All Clients ---------- */
     @Test
+    @DisplayName("Get All Clients | Clients exist | Returns 200 and clients")
     void getAllClients_whenClientsExist_shouldReturnClients() throws Exception {
         // Arrange
         var response = new GetAllClientsResponseDto(1L, "Ana", "ana@example.com", "12345678", true);
@@ -173,6 +176,7 @@ class ClientControllerTest {
     }
 
     @Test
+    @DisplayName("Get All Clients | No clients exist | Returns 200 and empty list")
     void getAllClients_whenNoClientsExist_shouldReturnEmptyList() throws Exception {
         // Arrange
         when(getAllClientsService.execute()).thenReturn(List.of());
@@ -187,6 +191,7 @@ class ClientControllerTest {
 
     /* ---------- Get Client by Name ---------- */
     @Test
+    @DisplayName("Get Client by Name | Client exists | Returns 200 and client")
     void getClientByName_whenClientExists_shouldReturnClient() throws Exception {
         // Arrange
         var response = new GetClientByNameResponseDto(1L, "Ana", "ana@example.com", "12345678", true);
@@ -203,6 +208,7 @@ class ClientControllerTest {
     }
 
     @Test
+    @DisplayName("Get Client by Name | Client does not exist | Returns 404 Not Found")
     void getClientByName_whenClientDoesNotExist_shouldReturnNotFound() throws Exception {
         // Arrange
         when(getClientByNameService.execute("Ana")).thenThrow(new EntityNotFoundException(clientNotFoundMessage));
@@ -225,6 +231,7 @@ class ClientControllerTest {
             """;
 
     @Test
+    @DisplayName("Update Client by Id | Valid request | Returns 200 and updated client")
     void updateClientById_whenValidRequest_shouldReturnUpdatedClient() throws Exception {
         // Arrange
         var request = new UpdateClientByIdRequestDto("Ana Maria", "ana.maria@example.com", "87654321");
@@ -243,6 +250,7 @@ class ClientControllerTest {
     }
 
     @Test
+    @DisplayName("Update Client by Id | Client does not exist | Returns 404 Not Found")
     void updateClientById_whenClientDoesNotExist_shouldReturnNotFound() throws Exception {
         // Arrange
         var request = new UpdateClientByIdRequestDto("Ana Maria", "ana.maria@example.com", "87654321");
@@ -263,6 +271,7 @@ class ClientControllerTest {
             "{\"email\":\"invalid\"}",
             "{\"phone\":\"123\"}"
     })
+    @DisplayName("Update Client by Id | Invalid request | Returns 400 Bad Request")
     void updateClientById_whenInvalidRequest_shouldReturnBadRequest(String invalidJson) throws Exception {
         // Act & Assert
         mockMvc.perform(put("/clients").param("id", "1")
@@ -274,6 +283,7 @@ class ClientControllerTest {
     }
 
     @Test
+    @DisplayName("Update Client by Id | Client property already exists | Returns 409 Conflict")
     void updateClientById_whenClientAlreadyExists_shouldReturnConflict() throws Exception {
         // Arrange
         var request = new UpdateClientByIdRequestDto("Ana Maria", "ana.maria@example.com", "87654321");
@@ -291,6 +301,7 @@ class ClientControllerTest {
 
     /* ---------- Delete Client by Id ---------- */
     @Test
+    @DisplayName("Delete Client by Id | Client exists | Returns 204 No Content")
     void deleteClientById_whenClientExists_shouldReturnNoContent() throws Exception {
         // Act & Assert
         mockMvc.perform(delete("/clients").param("id", "1"))
@@ -301,6 +312,7 @@ class ClientControllerTest {
     }
 
     @Test
+    @DisplayName("Delete Client by Id | Client does not exist | Returns 404 Not Found")
     void deleteClientById_whenClientDoesNotExist_shouldReturnNotFound() throws Exception {
         // Arrange
         doThrow(new EntityNotFoundException(clientNotFoundMessage)).when(deleteClientByIdService).execute(1L);
@@ -314,6 +326,7 @@ class ClientControllerTest {
     }
 
     @Test
+    @DisplayName("Delete Client by Id | Invalid id | Returns 400 Bad Request")
     void deleteClientById_whenInvalidId_shouldReturnBadRequest() throws Exception {
         // Act & Assert
         mockMvc.perform(delete("/clients").param("id", "invalid"))
