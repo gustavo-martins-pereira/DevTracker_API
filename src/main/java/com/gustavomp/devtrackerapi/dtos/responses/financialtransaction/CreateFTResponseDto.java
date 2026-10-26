@@ -5,7 +5,7 @@ import com.gustavomp.devtrackerapi.models.enums.TransactionType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record Create_FT_ResponseDto(
+public record CreateFTResponseDto(
         Long id,
         String description,
         BigDecimal amount,

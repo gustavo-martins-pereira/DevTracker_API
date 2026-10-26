@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -282,6 +283,7 @@ public class ProjectControllerTest {
                 fieldPattern,
                 Matcher.quoteReplacement(replacement)
         );
+        assertNotEquals(CREATE_FIXED_PRICE_PROJECT_JSON, invalidJson, "The test must replace the selected field");
 
         // Act & Assert
         mockMvc.perform(post("/projects").contentType(MediaType.APPLICATION_JSON).content(invalidJson))
@@ -324,6 +326,7 @@ public class ProjectControllerTest {
                 fieldPattern,
                 Matcher.quoteReplacement(replacement)
         );
+        assertNotEquals(CREATE_HOURLY_RATE_PROJECT_JSON, invalidJson, "The test must replace the selected field");
 
         // Act & Assert
         mockMvc.perform(post("/projects").contentType(MediaType.APPLICATION_JSON).content(invalidJson))

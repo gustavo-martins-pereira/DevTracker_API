@@ -1,6 +1,7 @@
 package com.gustavomp.devtrackerapi.suites;
 
 import com.gustavomp.devtrackerapi.controllers.ClientControllerTest;
+import com.gustavomp.devtrackerapi.controllers.FinancialTransactionControllerTest;
 import com.gustavomp.devtrackerapi.controllers.ProjectControllerTest;
 import org.junit.platform.suite.api.IncludeClassNamePatterns;
 import org.junit.platform.suite.api.SelectClasses;
@@ -12,6 +13,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
 @SelectClasses({
         ClientControllerTest.class,
         ProjectControllerTest.class,
+        FinancialTransactionControllerTest.class,
 })
 @IncludeClassNamePatterns(".*")
 public class ControllersSuite {}

@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -136,6 +137,7 @@ public class ClientControllerTest {
                 fieldPattern,
                 Matcher.quoteReplacement(replacement)
         );
+        assertNotEquals(CREATE_JSON, invalidJson, "The test must replace the selected field");
 
         // Act & Assert
         mockMvc.perform(post("/clients").contentType(MediaType.APPLICATION_JSON).content(invalidJson))

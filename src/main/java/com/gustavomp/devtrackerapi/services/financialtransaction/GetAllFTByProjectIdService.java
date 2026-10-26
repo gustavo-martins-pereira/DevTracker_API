@@ -1,6 +1,6 @@
 package com.gustavomp.devtrackerapi.services.financialtransaction;
 
-import com.gustavomp.devtrackerapi.dtos.responses.financialtransaction.GetAll_FT_ByProjectIdResponseDto;
+import com.gustavomp.devtrackerapi.dtos.responses.financialtransaction.GetAllFTByProjectIdResponseDto;
 import com.gustavomp.devtrackerapi.mappers.FinancialTransactionMapper;
 import com.gustavomp.devtrackerapi.models.FinancialTransaction;
 import com.gustavomp.devtrackerapi.models.enums.Currency;
@@ -15,17 +15,17 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class GetAll_FT_ByProjectIdService {
+public class GetAllFTByProjectIdService {
 
     private final FinancialTransactionRepository financialTransactionRepository;
     private final FinancialTransactionMapper financialTransactionMapper;
     private final CurrencyService currencyService;
 
-    public List<GetAll_FT_ByProjectIdResponseDto> execute(Long projectId) {
+    public List<GetAllFTByProjectIdResponseDto> execute(Long projectId) {
         return execute(projectId, Currency.BRL);
     }
 
-    public List<GetAll_FT_ByProjectIdResponseDto> execute(Long projectId, Currency currency) {
+    public List<GetAllFTByProjectIdResponseDto> execute(Long projectId, Currency currency) {
         List<FinancialTransaction> transactions = financialTransactionRepository.findAllByProjectId(projectId);
 
         return transactions.stream()
@@ -35,7 +35,7 @@ public class GetAll_FT_ByProjectIdService {
                         responseAmount = responseAmount.divide(currencyService.getUsdBrlExchangeRate(), 2, RoundingMode.HALF_UP);
                     }
 
-                    return financialTransactionMapper.toGetAll_FT_ByProjectIdResponseDto(transaction, responseAmount);
+                    return financialTransactionMapper.toGetAllFTByProjectIdResponseDto(transaction, responseAmount);
                 })
                 .toList();
     }

@@ -1,7 +1,7 @@
 package com.gustavomp.devtrackerapi.services.financialtransaction;
 
-import com.gustavomp.devtrackerapi.dtos.requests.financialtransaction.Create_FT_RequestDto;
-import com.gustavomp.devtrackerapi.dtos.responses.financialtransaction.Create_FT_ResponseDto;
+import com.gustavomp.devtrackerapi.dtos.requests.financialtransaction.CreateFTRequestDto;
+import com.gustavomp.devtrackerapi.dtos.responses.financialtransaction.CreateFTResponseDto;
 import com.gustavomp.devtrackerapi.mappers.FinancialTransactionMapper;
 import com.gustavomp.devtrackerapi.models.FinancialTransaction;
 import com.gustavomp.devtrackerapi.models.Project;
@@ -38,9 +38,9 @@ public class CreateFTServiceTest {
     private FinancialTransactionMapper financialTransactionMapper;
 
     @InjectMocks
-    private Create_FT_Service createFTService;
+    private CreateFTService createFTService;
 
-    private final Create_FT_RequestDto request = new Create_FT_RequestDto(
+    private final CreateFTRequestDto request = new CreateFTRequestDto(
             "Website payment",
             new BigDecimal("1000.00"),
             LocalDate.of(2026, 1, 1),
@@ -62,7 +62,7 @@ public class CreateFTServiceTest {
         savedTransaction.setId(1L);
         when(financialTransactionRepository.save(transactionToSave)).thenReturn(savedTransaction);
 
-        var expectedResponse = new Create_FT_ResponseDto(
+        var expectedResponse = new CreateFTResponseDto(
                 1L,
                 request.description(),
                 request.amount(),
@@ -70,7 +70,7 @@ public class CreateFTServiceTest {
                 request.transactionType(),
                 request.projectId()
         );
-        when(financialTransactionMapper.toCreate_FT_ResponseDto(savedTransaction)).thenReturn(expectedResponse);
+        when(financialTransactionMapper.toCreateFTResponseDto(savedTransaction)).thenReturn(expectedResponse);
 
         // Act
         var actualResponse = createFTService.execute(request);
@@ -81,7 +81,7 @@ public class CreateFTServiceTest {
         verify(projectRepository).findById(request.projectId());
         verify(financialTransactionRepository).save(transactionToSave);
         verify(financialTransactionMapper).toEntity(request);
-        verify(financialTransactionMapper).toCreate_FT_ResponseDto(savedTransaction);
+        verify(financialTransactionMapper).toCreateFTResponseDto(savedTransaction);
     }
 
     @Test

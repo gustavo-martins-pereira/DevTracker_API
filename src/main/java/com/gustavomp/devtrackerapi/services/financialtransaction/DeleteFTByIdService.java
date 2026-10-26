@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class Delete_FT_ByIdService {
+public class DeleteFTByIdService {
 
     private final FinancialTransactionRepository financialTransactionRepository;
 

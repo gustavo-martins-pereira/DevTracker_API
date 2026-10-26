@@ -5,13 +5,10 @@ import com.gustavomp.devtrackerapi.models.enums.TransactionType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record Get_FT_ByIdResponseDto(
+public record GetAllFTByProjectIdResponseDto(
         Long id,
         String description,
         BigDecimal amount,
         LocalDate date,
-        TransactionType transactionType,
-        Long projectId,
-        Long clientId,
-        String projectType
+        TransactionType transactionType
 ) {}

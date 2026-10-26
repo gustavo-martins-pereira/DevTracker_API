@@ -1,6 +1,6 @@
 package com.gustavomp.devtrackerapi.services.financialtransaction;
 
-import com.gustavomp.devtrackerapi.dtos.responses.financialtransaction.Get_FT_ByIdResponseDto;
+import com.gustavomp.devtrackerapi.dtos.responses.financialtransaction.GetFTByIdResponseDto;
 import com.gustavomp.devtrackerapi.mappers.FinancialTransactionMapper;
 import com.gustavomp.devtrackerapi.models.FinancialTransaction;
 import com.gustavomp.devtrackerapi.models.enums.Currency;
@@ -33,7 +33,7 @@ public class GetFTByIdServiceTest {
     @Mock
     private CurrencyService currencyService;
     @InjectMocks
-    private Get_FT_ByIdService service;
+    private GetFTByIdService service;
 
     @Test
     @DisplayName("Get Financial Transaction | Default currency | Returns BRL amount")
@@ -43,7 +43,7 @@ public class GetFTByIdServiceTest {
         when(financialTransactionRepository.findById(1L)).thenReturn(Optional.of(transaction));
 
         var expectedResponse = response(transaction, new BigDecimal("100.01"));
-        when(financialTransactionMapper.toGet_FT_ByIdResponseDto(transaction, new BigDecimal("100.01")))
+        when(financialTransactionMapper.toGetFTByIdResponseDto(transaction, new BigDecimal("100.01")))
                 .thenReturn(expectedResponse);
 
         // Act
@@ -54,7 +54,7 @@ public class GetFTByIdServiceTest {
         assertEquals(new BigDecimal("100.01"), transaction.getAmount());
 
         verify(financialTransactionRepository).findById(1L);
-        verify(financialTransactionMapper).toGet_FT_ByIdResponseDto(transaction, new BigDecimal("100.01"));
+        verify(financialTransactionMapper).toGetFTByIdResponseDto(transaction, new BigDecimal("100.01"));
 
         verifyNoInteractions(currencyService);
     }
@@ -67,7 +67,7 @@ public class GetFTByIdServiceTest {
         when(financialTransactionRepository.findById(1L)).thenReturn(Optional.of(transaction));
 
         var expectedResponse = response(transaction, new BigDecimal("100.01"));
-        when(financialTransactionMapper.toGet_FT_ByIdResponseDto(transaction, new BigDecimal("100.01")))
+        when(financialTransactionMapper.toGetFTByIdResponseDto(transaction, new BigDecimal("100.01")))
                 .thenReturn(expectedResponse);
 
         // Act
@@ -78,7 +78,7 @@ public class GetFTByIdServiceTest {
         assertEquals(new BigDecimal("100.01"), transaction.getAmount());
 
         verify(financialTransactionRepository).findById(1L);
-        verify(financialTransactionMapper).toGet_FT_ByIdResponseDto(transaction, new BigDecimal("100.01"));
+        verify(financialTransactionMapper).toGetFTByIdResponseDto(transaction, new BigDecimal("100.01"));
 
         verifyNoInteractions(currencyService);
     }
@@ -93,7 +93,7 @@ public class GetFTByIdServiceTest {
         var expectedResponse = response(transaction, new BigDecimal("33.34"));
         when(currencyService.getUsdBrlExchangeRate()).thenReturn(new BigDecimal("3.00"));
 
-        when(financialTransactionMapper.toGet_FT_ByIdResponseDto(transaction, new BigDecimal("33.34")))
+        when(financialTransactionMapper.toGetFTByIdResponseDto(transaction, new BigDecimal("33.34")))
                 .thenReturn(expectedResponse);
 
         // Act
@@ -104,7 +104,7 @@ public class GetFTByIdServiceTest {
         assertEquals(new BigDecimal("100.01"), transaction.getAmount());
 
         verify(financialTransactionRepository).findById(1L);
-        verify(financialTransactionMapper).toGet_FT_ByIdResponseDto(transaction, new BigDecimal("33.34"));
+        verify(financialTransactionMapper).toGetFTByIdResponseDto(transaction, new BigDecimal("33.34"));
         verify(currencyService).getUsdBrlExchangeRate();
     }
 
@@ -127,8 +127,8 @@ public class GetFTByIdServiceTest {
                 LocalDate.of(2026, 1, 1), TransactionType.INCOME, null);
     }
 
-    private Get_FT_ByIdResponseDto response(FinancialTransaction transaction, BigDecimal amount) {
-        return new Get_FT_ByIdResponseDto(transaction.getId(), transaction.getDescription(), amount,
+    private GetFTByIdResponseDto response(FinancialTransaction transaction, BigDecimal amount) {
+        return new GetFTByIdResponseDto(transaction.getId(), transaction.getDescription(), amount,
                 transaction.getDate(), transaction.getTransactionType(), 1L, 1L, "FIXED_PRICE");
     }
 }

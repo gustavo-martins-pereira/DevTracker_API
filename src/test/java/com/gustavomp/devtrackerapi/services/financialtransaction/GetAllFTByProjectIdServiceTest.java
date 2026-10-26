@@ -1,6 +1,6 @@
 package com.gustavomp.devtrackerapi.services.financialtransaction;
 
-import com.gustavomp.devtrackerapi.dtos.responses.financialtransaction.GetAll_FT_ByProjectIdResponseDto;
+import com.gustavomp.devtrackerapi.dtos.responses.financialtransaction.GetAllFTByProjectIdResponseDto;
 import com.gustavomp.devtrackerapi.mappers.FinancialTransactionMapper;
 import com.gustavomp.devtrackerapi.models.FinancialTransaction;
 import com.gustavomp.devtrackerapi.models.enums.Currency;
@@ -35,7 +35,7 @@ public class GetAllFTByProjectIdServiceTest {
     private CurrencyService currencyService;
 
     @InjectMocks
-    private GetAll_FT_ByProjectIdService getAllFtByProjectIdService;
+    private GetAllFTByProjectIdService getAllFtByProjectIdService;
 
     @Test
     @DisplayName("Get Financial Transactions | Default currency | Returns BRL amount")
@@ -45,7 +45,7 @@ public class GetAllFTByProjectIdServiceTest {
         when(financialTransactionRepository.findAllByProjectId(1L)).thenReturn(List.of(transaction));
 
         var expectedResponse = createResponse(transaction, new BigDecimal("100.01"));
-        when(financialTransactionMapper.toGetAll_FT_ByProjectIdResponseDto(transaction, new BigDecimal("100.01")))
+        when(financialTransactionMapper.toGetAllFTByProjectIdResponseDto(transaction, new BigDecimal("100.01")))
                 .thenReturn(expectedResponse);
 
         // Act
@@ -56,7 +56,7 @@ public class GetAllFTByProjectIdServiceTest {
         assertEquals(new BigDecimal("100.01"), transaction.getAmount());
 
         verify(financialTransactionRepository).findAllByProjectId(1L);
-        verify(financialTransactionMapper).toGetAll_FT_ByProjectIdResponseDto(transaction, new BigDecimal("100.01"));
+        verify(financialTransactionMapper).toGetAllFTByProjectIdResponseDto(transaction, new BigDecimal("100.01"));
 
         verifyNoInteractions(currencyService);
     }
@@ -69,7 +69,7 @@ public class GetAllFTByProjectIdServiceTest {
         when(financialTransactionRepository.findAllByProjectId(1L)).thenReturn(List.of(transaction));
 
         var expectedResponse = createResponse(transaction, new BigDecimal("100.01"));
-        when(financialTransactionMapper.toGetAll_FT_ByProjectIdResponseDto(transaction, new BigDecimal("100.01")))
+        when(financialTransactionMapper.toGetAllFTByProjectIdResponseDto(transaction, new BigDecimal("100.01")))
                 .thenReturn(expectedResponse);
 
         // Act
@@ -80,7 +80,7 @@ public class GetAllFTByProjectIdServiceTest {
         assertEquals(new BigDecimal("100.01"), transaction.getAmount());
 
         verify(financialTransactionRepository).findAllByProjectId(1L);
-        verify(financialTransactionMapper).toGetAll_FT_ByProjectIdResponseDto(transaction, new BigDecimal("100.01"));
+        verify(financialTransactionMapper).toGetAllFTByProjectIdResponseDto(transaction, new BigDecimal("100.01"));
 
         verifyNoInteractions(currencyService);
     }
@@ -95,7 +95,7 @@ public class GetAllFTByProjectIdServiceTest {
         when(currencyService.getUsdBrlExchangeRate()).thenReturn(new BigDecimal("3.00"));
 
         var expectedResponse = createResponse(transaction, new BigDecimal("33.34"));
-        when(financialTransactionMapper.toGetAll_FT_ByProjectIdResponseDto(transaction, new BigDecimal("33.34")))
+        when(financialTransactionMapper.toGetAllFTByProjectIdResponseDto(transaction, new BigDecimal("33.34")))
                 .thenReturn(expectedResponse);
 
         // Act
@@ -106,7 +106,7 @@ public class GetAllFTByProjectIdServiceTest {
         assertEquals(new BigDecimal("100.01"), transaction.getAmount());
 
         verify(financialTransactionRepository).findAllByProjectId(1L);
-        verify(financialTransactionMapper).toGetAll_FT_ByProjectIdResponseDto(transaction, new BigDecimal("33.34"));
+        verify(financialTransactionMapper).toGetAllFTByProjectIdResponseDto(transaction, new BigDecimal("33.34"));
         verify(currencyService).getUsdBrlExchangeRate();
     }
 
@@ -154,10 +154,10 @@ public class GetAllFTByProjectIdServiceTest {
         when(financialTransactionRepository.findAllByProjectId(1L)).thenReturn(List.of(first, second));
 
         var firstResponse = createResponse(first, first.getAmount());
-        when(financialTransactionMapper.toGetAll_FT_ByProjectIdResponseDto(first, first.getAmount())).thenReturn(firstResponse);
+        when(financialTransactionMapper.toGetAllFTByProjectIdResponseDto(first, first.getAmount())).thenReturn(firstResponse);
 
         var secondResponse = createResponse(second, second.getAmount());
-        when(financialTransactionMapper.toGetAll_FT_ByProjectIdResponseDto(second, second.getAmount())).thenReturn(secondResponse);
+        when(financialTransactionMapper.toGetAllFTByProjectIdResponseDto(second, second.getAmount())).thenReturn(secondResponse);
 
         // Act
         var actualResponse = getAllFtByProjectIdService.execute(1L);
@@ -165,8 +165,8 @@ public class GetAllFTByProjectIdServiceTest {
         // Assert
         assertEquals(List.of(firstResponse, secondResponse), actualResponse);
 
-        verify(financialTransactionMapper).toGetAll_FT_ByProjectIdResponseDto(first, first.getAmount());
-        verify(financialTransactionMapper).toGetAll_FT_ByProjectIdResponseDto(second, second.getAmount());
+        verify(financialTransactionMapper).toGetAllFTByProjectIdResponseDto(first, first.getAmount());
+        verify(financialTransactionMapper).toGetAllFTByProjectIdResponseDto(second, second.getAmount());
 
         verifyNoInteractions(currencyService);
     }
@@ -182,8 +182,8 @@ public class GetAllFTByProjectIdServiceTest {
         );
     }
 
-    private GetAll_FT_ByProjectIdResponseDto createResponse(FinancialTransaction transaction, BigDecimal amount) {
-        return new GetAll_FT_ByProjectIdResponseDto(
+    private GetAllFTByProjectIdResponseDto createResponse(FinancialTransaction transaction, BigDecimal amount) {
+        return new GetAllFTByProjectIdResponseDto(
                 transaction.getId(),
                 transaction.getDescription(),
                 amount,

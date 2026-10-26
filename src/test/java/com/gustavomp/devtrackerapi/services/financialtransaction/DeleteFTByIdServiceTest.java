@@ -23,7 +23,7 @@ public class DeleteFTByIdServiceTest {
     @Mock
     private FinancialTransactionRepository financialTransactionRepository;
     @InjectMocks
-    private Delete_FT_ByIdService deleteFTByIdService;
+    private DeleteFTByIdService deleteFTByIdService;
 
     @Test
     @DisplayName("Delete Financial Transaction | Existing transaction | Deletes the transaction")

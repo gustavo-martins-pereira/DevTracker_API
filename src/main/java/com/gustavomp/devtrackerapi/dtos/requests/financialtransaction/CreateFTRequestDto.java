@@ -6,7 +6,7 @@ import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record Create_FT_RequestDto(
+public record CreateFTRequestDto(
         @NotBlank(message = "The 'description' couldn't be blank")
         String description,
 
