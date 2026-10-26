@@ -36,7 +36,7 @@ public class GetProjectByIdServiceTest {
 
     @Test
     @DisplayName("Get Project by Id | Existing project | Returns the project")
-    void execute_whenProjectIsFounded_shouldReturnProject() {
+    void execute_whenProjectExists_shouldReturnProject() {
         // Arrange
         Project project = new FixedPriceProject();
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
@@ -67,7 +67,7 @@ public class GetProjectByIdServiceTest {
 
     @Test
     @DisplayName("Get Project by Id | Project not found | Throws EntityNotFoundException")
-    void execute_whenProjectIsNotFounded_shouldThrowEntityNotFoundException() {
+    void execute_whenProjectDoesNotExist_shouldThrowEntityNotFoundException() {
         // Arrange
         when(projectRepository.findById(1L)).thenReturn(Optional.empty());
 

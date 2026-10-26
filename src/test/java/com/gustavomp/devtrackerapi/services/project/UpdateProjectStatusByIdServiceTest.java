@@ -35,7 +35,7 @@ public class UpdateProjectStatusByIdServiceTest {
 
     @Test
     @DisplayName("Update Project Status | Existing project | Saves and returns the updated project")
-    void execute_whenProjectIsFounded_shouldReturnUpdatedProject() {
+    void execute_whenProjectExists_shouldReturnUpdatedProject() {
         // Arrange
         Project oldProject = new FixedPriceProject();
         oldProject.setProjectStatus(ProjectStatus.IN_PROGRESS);
@@ -71,7 +71,7 @@ public class UpdateProjectStatusByIdServiceTest {
 
     @Test
     @DisplayName("Update Project Status | Project not found | Throws EntityNotFoundException")
-    void execute_whenProjectIsNotFounded_shouldThrowEntityNotFoundException() {
+    void execute_whenProjectDoesNotExist_shouldThrowEntityNotFoundException() {
         // Arrange
         UpdateProjectStatusByIdRequestDto request = new UpdateProjectStatusByIdRequestDto(ProjectStatus.CANCELLED);
         when(projectRepository.findById(1L)).thenReturn(Optional.empty());

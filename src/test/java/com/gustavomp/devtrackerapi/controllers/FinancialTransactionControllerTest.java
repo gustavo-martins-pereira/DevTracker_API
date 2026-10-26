@@ -52,9 +52,9 @@ public class FinancialTransactionControllerTest {
 
     private MockMvc mockMvc;
 
-    private static final String projectNotFoundMessage = "Project not found";
-    private static final String financialTransactionNotFoundMessage = "Financial transaction not found";
-    private static final String currencyProviderMessage = "Currency provider unavailable";
+    private static final String PROJECT_NOT_FOUND_MESSAGE = "Project not found";
+    private static final String FINANCIAL_TRANSACTION_NOT_FOUND_MESSAGE = "Financial transaction not found";
+    private static final String CURRENCY_PROVIDER_MESSAGE = "Currency provider unavailable";
 
     @BeforeEach
     void setUp() {
@@ -127,12 +127,12 @@ public class FinancialTransactionControllerTest {
                 TransactionType.INCOME,
                 1L
         );
-        when(createFTService.execute(request)).thenThrow(new EntityNotFoundException(projectNotFoundMessage));
+        when(createFTService.execute(request)).thenThrow(new EntityNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
 
         // Act & Assert
         mockMvc.perform(post("/financial-transactions").contentType(MediaType.APPLICATION_JSON).content(CREATE_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value(projectNotFoundMessage));
+                .andExpect(jsonPath("$.error").value(PROJECT_NOT_FOUND_MESSAGE));
 
         verify(createFTService).execute(request);
     }
@@ -295,14 +295,14 @@ public class FinancialTransactionControllerTest {
     void getAllFinancialTransactionByProjectId_whenCurrencyProviderFails_shouldReturnBadGateway() throws Exception {
         // Arrange
         when(getAllFTByProjectIdService.execute(1L, Currency.USD))
-                .thenThrow(new CurrencyProviderException(currencyProviderMessage));
+                .thenThrow(new CurrencyProviderException(CURRENCY_PROVIDER_MESSAGE));
 
         // Act & Assert
         mockMvc.perform(get("/financial-transactions")
                         .param("projectId", "1").param("currency", "USD")
                 )
                 .andExpect(status().isBadGateway())
-                .andExpect(jsonPath("$.error").value(currencyProviderMessage));
+                .andExpect(jsonPath("$.error").value(CURRENCY_PROVIDER_MESSAGE));
 
         verify(getAllFTByProjectIdService).execute(1L, Currency.USD);
     }
@@ -386,12 +386,12 @@ public class FinancialTransactionControllerTest {
     void getFinancialTransactionById_whenTransactionDoesNotExist_shouldReturnNotFound() throws Exception {
         // Arrange
         when(getFTByIdService.execute(1L, Currency.BRL))
-                .thenThrow(new EntityNotFoundException(financialTransactionNotFoundMessage));
+                .thenThrow(new EntityNotFoundException(FINANCIAL_TRANSACTION_NOT_FOUND_MESSAGE));
 
         // Act & Assert
         mockMvc.perform(get("/financial-transactions/1"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value(financialTransactionNotFoundMessage));
+                .andExpect(jsonPath("$.error").value(FINANCIAL_TRANSACTION_NOT_FOUND_MESSAGE));
 
         verify(getFTByIdService).execute(1L, Currency.BRL);
     }
@@ -423,12 +423,12 @@ public class FinancialTransactionControllerTest {
     void getFinancialTransactionById_whenCurrencyProviderFails_shouldReturnBadGateway() throws Exception {
         // Arrange
         when(getFTByIdService.execute(1L, Currency.USD))
-                .thenThrow(new CurrencyProviderException(currencyProviderMessage));
+                .thenThrow(new CurrencyProviderException(CURRENCY_PROVIDER_MESSAGE));
 
         // Act & Assert
         mockMvc.perform(get("/financial-transactions/1").param("currency", "USD"))
                 .andExpect(status().isBadGateway())
-                .andExpect(jsonPath("$.error").value(currencyProviderMessage));
+                .andExpect(jsonPath("$.error").value(CURRENCY_PROVIDER_MESSAGE));
 
         verify(getFTByIdService).execute(1L, Currency.USD);
     }
@@ -449,13 +449,13 @@ public class FinancialTransactionControllerTest {
     @DisplayName("Delete Financial Transaction by Id | Transaction does not exist | Returns 404 Not Found")
     void deleteFinancialTransactionById_whenTransactionDoesNotExist_shouldReturnNotFound() throws Exception {
         // Arrange
-        doThrow(new EntityNotFoundException(financialTransactionNotFoundMessage))
+        doThrow(new EntityNotFoundException(FINANCIAL_TRANSACTION_NOT_FOUND_MESSAGE))
                 .when(deleteFTByIdService).execute(1L);
 
         // Act & Assert
         mockMvc.perform(delete("/financial-transactions/1"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value(financialTransactionNotFoundMessage));
+                .andExpect(jsonPath("$.error").value(FINANCIAL_TRANSACTION_NOT_FOUND_MESSAGE));
 
         verify(deleteFTByIdService).execute(1L);
     }

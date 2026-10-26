@@ -38,7 +38,7 @@ public class GetAllFTByProjectIdServiceTest {
     private GetAllFTByProjectIdService getAllFtByProjectIdService;
 
     @Test
-    @DisplayName("Get Financial Transactions | Default currency | Returns BRL amount")
+    @DisplayName("Get All Financial Transactions by Project Id | Default currency | Returns BRL amount")
     void execute_whenDefaultCurrency_shouldReturnOriginalAmount() {
         // Arrange
         FinancialTransaction transaction = createTransaction(1L, "100.01");
@@ -62,7 +62,7 @@ public class GetAllFTByProjectIdServiceTest {
     }
 
     @Test
-    @DisplayName("Get Financial Transactions | BRL currency | Preserves the amount")
+    @DisplayName("Get All Financial Transactions by Project Id | BRL currency | Preserves the amount")
     void execute_whenBrlCurrency_shouldReturnOriginalAmount() {
         // Arrange
         FinancialTransaction transaction = createTransaction(1L, "100.01");
@@ -86,7 +86,7 @@ public class GetAllFTByProjectIdServiceTest {
     }
 
     @Test
-    @DisplayName("Get Financial Transactions | USD currency | Converts and rounds the amount")
+    @DisplayName("Get All Financial Transactions by Project Id | USD currency | Converts and rounds the amount")
     void execute_whenUsdCurrency_shouldReturnConvertedAmount() {
         // Arrange
         FinancialTransaction transaction = createTransaction(1L, "100.01");
@@ -111,7 +111,7 @@ public class GetAllFTByProjectIdServiceTest {
     }
 
     @Test
-    @DisplayName("Get All Financial Transactions | Empty BRL result | Returns an empty list")
+    @DisplayName("Get All Financial Transactions by Project Id | Empty BRL result | Returns an empty list")
     void execute_whenNoTransactionsExist_shouldReturnEmptyList() {
         // Arrange
         when(financialTransactionRepository.findAllByProjectId(1L)).thenReturn(List.of());
@@ -128,7 +128,7 @@ public class GetAllFTByProjectIdServiceTest {
     }
 
     @Test
-    @DisplayName("Get All Financial Transactions | Empty USD result | Returns an empty list")
+    @DisplayName("Get All Financial Transactions by Project Id | Empty USD result | Returns an empty list")
     void execute_whenNoTransactionsExistInUsd_shouldReturnEmptyList() {
         // Arrange
         when(financialTransactionRepository.findAllByProjectId(1L)).thenReturn(List.of());
@@ -145,7 +145,7 @@ public class GetAllFTByProjectIdServiceTest {
     }
 
     @Test
-    @DisplayName("Get All Financial Transactions | Multiple transactions | Preserves result order")
+    @DisplayName("Get All Financial Transactions by Project Id | Multiple transactions | Preserves result order")
     void execute_whenMultipleTransactionsExist_shouldReturnMappedTransactionsInOrder() {
         // Arrange
         FinancialTransaction first = createTransaction(1L, "100.00");

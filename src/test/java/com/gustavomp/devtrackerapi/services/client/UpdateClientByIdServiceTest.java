@@ -48,8 +48,8 @@ public class UpdateClientByIdServiceTest {
     }
 
     @Test
-    @DisplayName("Update Client | Successfully | Saves and returns the updated client")
-    void execute_whenClientIsFounded_shouldReturnUpdatedClient() {
+    @DisplayName("Update Client | Existing client | Saves and returns the updated client")
+    void execute_whenClientExists_shouldReturnUpdatedClient() {
         // Arrange
         when(clientRepository.findByIdAndActiveIsTrue(1L)).thenReturn(Optional.of(oldClient));
 
@@ -84,7 +84,7 @@ public class UpdateClientByIdServiceTest {
 
     @Test
     @DisplayName("Update Client | Client not found | Throws EntityNotFoundException")
-    void execute_whenClientIsNotFounded_shouldThrowEntityNotFoundException() {
+    void execute_whenClientDoesNotExist_shouldThrowEntityNotFoundException() {
         // Arrange
         when(clientRepository.findByIdAndActiveIsTrue(1L)).thenReturn(Optional.empty());
 
@@ -97,8 +97,8 @@ public class UpdateClientByIdServiceTest {
     }
 
     @Test
-    @DisplayName("Update Client | Other Client with same name/email/phone  | Throws EntityAlreadyExistsException")
-    void execute_whenOtherClientIsFounded_shouldThrowEntityAlreadyExistsException() {
+    @DisplayName("Update Client | Other client with same name/email/phone | Throws EntityAlreadyExistsException")
+    void execute_whenOtherClientExists_shouldThrowEntityAlreadyExistsException() {
         // Arrange
         when(clientRepository.findByIdAndActiveIsTrue(1L)).thenReturn(Optional.of(oldClient));
 

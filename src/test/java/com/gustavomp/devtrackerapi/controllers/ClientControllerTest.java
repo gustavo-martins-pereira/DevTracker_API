@@ -52,9 +52,9 @@ public class ClientControllerTest {
 
     private MockMvc mockMvc;
 
-    private static final String clientNotFoundMessage = "Client not found";
+    private static final String CLIENT_NOT_FOUND_MESSAGE = "Client not found";
 
-    private static final String clientAlreadyExistsMessage = "Client already exists";
+    private static final String CLIENT_ALREADY_EXISTS_MESSAGE = "Client already exists";
 
     @BeforeEach
     void setUp() {
@@ -98,17 +98,17 @@ public class ClientControllerTest {
     }
 
     @Test
-    @DisplayName("Create Client | Client already exists | Throws EntityAlreadyExistsException and 409")
+    @DisplayName("Create Client | Client already exists | Returns 409 Conflict")
     void createClient_whenClientAlreadyExists_shouldReturnConflict() throws Exception {
         // Arrange
         var request = new CreateClientRequestDto("Ana", "ana@example.com", "12345678", true);
-        when(createClientService.execute(request)).thenThrow(new EntityAlreadyExistsException(clientAlreadyExistsMessage));
+        when(createClientService.execute(request)).thenThrow(new EntityAlreadyExistsException(CLIENT_ALREADY_EXISTS_MESSAGE));
 
         // Act & Assert
         mockMvc.perform(post("/clients").contentType(MediaType.APPLICATION_JSON).content(CREATE_JSON))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.status").value(409))
-                .andExpect(jsonPath("$.error").value(clientAlreadyExistsMessage));
+                .andExpect(jsonPath("$.error").value(CLIENT_ALREADY_EXISTS_MESSAGE));
 
         verify(createClientService).execute(request);
     }
@@ -121,7 +121,7 @@ public class ClientControllerTest {
             "{\"phone\":\"123\"}",
             "{\"active\":null}"
     })
-    @DisplayName("Create Client | Invalid Request params | Throws BadRequestException and 400")
+    @DisplayName("Create Client | Invalid request | Returns 400 Bad Request")
     void createClient_whenInvalidRequest_shouldReturnBadRequest(String invalidField) throws Exception {
         // Arrange
         // Replace one field at a time to exercise each validation constraint independently.
@@ -212,12 +212,12 @@ public class ClientControllerTest {
     @DisplayName("Get Client by Name | Client does not exist | Returns 404 Not Found")
     void getClientByName_whenClientDoesNotExist_shouldReturnNotFound() throws Exception {
         // Arrange
-        when(getClientByNameService.execute("Ana")).thenThrow(new EntityNotFoundException(clientNotFoundMessage));
+        when(getClientByNameService.execute("Ana")).thenThrow(new EntityNotFoundException(CLIENT_NOT_FOUND_MESSAGE));
 
         // Act & Assert
         mockMvc.perform(get("/clients").param("name", "Ana"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value(clientNotFoundMessage));
+                .andExpect(jsonPath("$.error").value(CLIENT_NOT_FOUND_MESSAGE));
 
         verify(getClientByNameService).execute("Ana");
     }
@@ -255,13 +255,13 @@ public class ClientControllerTest {
     void updateClientById_whenClientDoesNotExist_shouldReturnNotFound() throws Exception {
         // Arrange
         var request = new UpdateClientByIdRequestDto("Ana Maria", "ana.maria@example.com", "87654321");
-        when(updateClientByIdService.execute(1L, request)).thenThrow(new EntityNotFoundException(clientNotFoundMessage));
+        when(updateClientByIdService.execute(1L, request)).thenThrow(new EntityNotFoundException(CLIENT_NOT_FOUND_MESSAGE));
 
         // Act & Assert
         mockMvc.perform(put("/clients").param("id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content(UPDATE_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value(clientNotFoundMessage));
+                .andExpect(jsonPath("$.error").value(CLIENT_NOT_FOUND_MESSAGE));
 
         verify(updateClientByIdService).execute(1L, request);
     }
@@ -289,13 +289,13 @@ public class ClientControllerTest {
         // Arrange
         var request = new UpdateClientByIdRequestDto("Ana Maria", "ana.maria@example.com", "87654321");
         when(updateClientByIdService.execute(1L, request))
-                .thenThrow(new EntityAlreadyExistsException(clientAlreadyExistsMessage));
+                .thenThrow(new EntityAlreadyExistsException(CLIENT_ALREADY_EXISTS_MESSAGE));
 
         // Act & Assert
         mockMvc.perform(put("/clients").param("id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content(UPDATE_JSON))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.error").value(clientAlreadyExistsMessage));
+                .andExpect(jsonPath("$.error").value(CLIENT_ALREADY_EXISTS_MESSAGE));
 
         verify(updateClientByIdService).execute(1L, request);
     }
@@ -316,12 +316,12 @@ public class ClientControllerTest {
     @DisplayName("Delete Client by Id | Client does not exist | Returns 404 Not Found")
     void deleteClientById_whenClientDoesNotExist_shouldReturnNotFound() throws Exception {
         // Arrange
-        doThrow(new EntityNotFoundException(clientNotFoundMessage)).when(deleteClientByIdService).execute(1L);
+        doThrow(new EntityNotFoundException(CLIENT_NOT_FOUND_MESSAGE)).when(deleteClientByIdService).execute(1L);
 
         // Act & Assert
         mockMvc.perform(delete("/clients").param("id", "1"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error").value(clientNotFoundMessage));
+                .andExpect(jsonPath("$.error").value(CLIENT_NOT_FOUND_MESSAGE));
 
         verify(deleteClientByIdService).execute(1L);
     }

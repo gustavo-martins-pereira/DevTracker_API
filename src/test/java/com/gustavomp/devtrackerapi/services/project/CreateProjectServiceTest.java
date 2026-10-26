@@ -45,7 +45,7 @@ public class CreateProjectServiceTest {
     CreateProjectRequestDto request;
 
     @BeforeEach
-    void setup() {
+    void setUp() {
         request = new CreateProjectRequestDto(
                 "Website",
                 "Client website",
@@ -108,7 +108,7 @@ public class CreateProjectServiceTest {
 
     @Test
     @DisplayName("Create Project | Client not found | Throws EntityNotFoundException")
-    void execute_whenClientIsNotFounded_shouldThrowEntityNotFoundException() {
+    void execute_whenClientDoesNotExist_shouldThrowEntityNotFoundException() {
         // Arrange
         when(clientRepository.findById(request.clientId())).thenReturn(Optional.empty());
 
@@ -120,8 +120,8 @@ public class CreateProjectServiceTest {
     }
 
     @Test
-    @DisplayName("Create Project | Matching project exists | Throws EntityNotFoundException")
-    void execute_whenMatchingProjectExists_shouldThrowEntityNotFoundException() {
+    @DisplayName("Create Project | Matching project exists | Throws EntityAlreadyExistsException")
+    void execute_whenMatchingProjectExists_shouldThrowEntityAlreadyExistsException() {
         // Arrange
         when(clientRepository.findById(request.clientId())).thenReturn(Optional.of(new Client()));
         when(projectRepository.findByName(request.name())).thenReturn(Optional.of(new FixedPriceProject()));

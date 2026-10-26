@@ -2,7 +2,6 @@ package com.gustavomp.devtrackerapi.services.project;
 
 import com.gustavomp.devtrackerapi.dtos.responses.project.GetAllProjectsResponseDto;
 import com.gustavomp.devtrackerapi.mappers.ProjectMapper;
-import com.gustavomp.devtrackerapi.models.Client;
 import com.gustavomp.devtrackerapi.models.FixedPriceProject;
 import com.gustavomp.devtrackerapi.models.HourlyRateProject;
 import com.gustavomp.devtrackerapi.models.Project;
@@ -37,7 +36,7 @@ public class GetAllProjectsServiceTest {
 
     @Test
     @DisplayName("Get All Projects | Projects exist | Returns mapped projects")
-    void execute_whenProjectsExists_shouldReturnProjects() {
+    void execute_whenProjectsExist_shouldReturnProjects() {
         // Arrange
         Project firstProject = new FixedPriceProject();
         firstProject.setProjectStatus(ProjectStatus.IN_PROGRESS);
@@ -45,8 +44,8 @@ public class GetAllProjectsServiceTest {
         secondProject.setProjectStatus(ProjectStatus.COMPLETED);
         when(projectRepository.findAll()).thenReturn(List.of(firstProject, secondProject));
 
-        GetAllProjectsResponseDto firstResponse = fixedPriceResponse(1L, ProjectStatus.IN_PROGRESS);
-        GetAllProjectsResponseDto secondResponse = hourlyRateResponse(2L, ProjectStatus.COMPLETED);
+        GetAllProjectsResponseDto firstResponse = fixedPriceResponse(ProjectStatus.IN_PROGRESS);
+        GetAllProjectsResponseDto secondResponse = hourlyRateResponse();
         when(projectMapper.toAllProjectsResponseDto(firstProject)).thenReturn(firstResponse);
         when(projectMapper.toAllProjectsResponseDto(secondProject)).thenReturn(secondResponse);
 
@@ -63,7 +62,7 @@ public class GetAllProjectsServiceTest {
 
     @Test
     @DisplayName("Get All Projects | No projects exist | Returns an empty list")
-    void execute_whenProjectsNotExists_shouldReturnEmptyList() {
+    void execute_whenNoProjectsExist_shouldReturnEmptyList() {
         // Arrange
         when(projectRepository.findAll()).thenReturn(List.of());
 
@@ -79,7 +78,7 @@ public class GetAllProjectsServiceTest {
 
     @Test
     @DisplayName("Get All Projects | Matching status | Returns mapped projects")
-    void execute_whenProjectsWithStatusExists_shouldReturnProjects() {
+    void execute_whenProjectsWithStatusExist_shouldReturnProjects() {
         // Arrange
         Project firstProject = new FixedPriceProject();
         firstProject.setProjectStatus(ProjectStatus.COMPLETED);
@@ -87,8 +86,8 @@ public class GetAllProjectsServiceTest {
         secondProject.setProjectStatus(ProjectStatus.COMPLETED);
         when(projectRepository.findAllByProjectStatus(ProjectStatus.COMPLETED)).thenReturn(List.of(firstProject, secondProject));
 
-        GetAllProjectsResponseDto firstResponse = fixedPriceResponse(1L, ProjectStatus.COMPLETED);
-        GetAllProjectsResponseDto secondResponse = hourlyRateResponse(2L, ProjectStatus.COMPLETED);
+        GetAllProjectsResponseDto firstResponse = fixedPriceResponse(ProjectStatus.COMPLETED);
+        GetAllProjectsResponseDto secondResponse = hourlyRateResponse();
         when(projectMapper.toAllProjectsResponseDto(firstProject)).thenReturn(firstResponse);
         when(projectMapper.toAllProjectsResponseDto(secondProject)).thenReturn(secondResponse);
 
@@ -105,7 +104,7 @@ public class GetAllProjectsServiceTest {
 
     @Test
     @DisplayName("Get All Projects | No projects with matching status | Returns an empty list")
-    void execute_whenProjectsWithStatusNotExists_shouldReturnEmptyList() {
+    void execute_whenNoProjectsWithStatusExist_shouldReturnEmptyList() {
         // Arrange
         when(projectRepository.findAllByProjectStatus(ProjectStatus.COMPLETED)).thenReturn(List.of());
 
@@ -119,9 +118,10 @@ public class GetAllProjectsServiceTest {
         verifyNoInteractions(projectMapper);
     }
 
-    private GetAllProjectsResponseDto fixedPriceResponse(long id, ProjectStatus status) {
+    private GetAllProjectsResponseDto fixedPriceResponse(ProjectStatus status) {
         return new GetAllProjectsResponseDto(
-                id, "Website",
+                1L,
+                "Website",
                 "Client website",
                 0,
                 LocalDate.of(2026, 1, 1),
@@ -134,15 +134,15 @@ public class GetAllProjectsServiceTest {
         );
     }
 
-    private GetAllProjectsResponseDto hourlyRateResponse(long id, ProjectStatus status) {
+    private GetAllProjectsResponseDto hourlyRateResponse() {
         return new GetAllProjectsResponseDto(
-                id,
+                2L,
                 "API",
                 "Client API",
                 10,
                 LocalDate.of(2026, 1, 1),
                 LocalDate.of(2026, 2, 1),
-                status,
+                ProjectStatus.COMPLETED,
                 1L,
                 "HOURLY_RATE",
                 null,

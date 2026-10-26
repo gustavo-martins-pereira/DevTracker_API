@@ -93,7 +93,7 @@ public class ProjectControllerTest {
             """;
 
     @Test
-    @DisplayName("Create FixedPriceProject | Valid request | Returns 201 and created project")
+    @DisplayName("Create Fixed Price Project | Valid request | Returns 201 and created project")
     void createFixedPriceProject_whenValidRequest_shouldReturnCreatedProject() throws Exception {
         // Arrange
         var request = new CreateProjectRequestDto(
@@ -145,7 +145,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    @DisplayName("Create HourlyRateProject | Valid request | Returns 201 and created project")
+    @DisplayName("Create Hourly Rate Project | Valid request | Returns 201 and created project")
     void createHourlyRateProject_whenValidRequest_shouldReturnCreatedProject() throws Exception {
         // Arrange
         var request = new CreateProjectRequestDto(
@@ -197,7 +197,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    @DisplayName("Create Project | Client not found | Throws EntityNotFoundException and 404")
+    @DisplayName("Create Project | Client not found | Returns 404 Not Found")
     void createProject_whenClientNotFound_shouldReturnNotFound() throws Exception {
         // Arrange
         var request = new CreateProjectRequestDto(
@@ -224,7 +224,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    @DisplayName("Create Project | Existing project with same name | Throws EntityAlreadyExistsException and 409")
+    @DisplayName("Create Project | Existing project with same name | Returns 409 Conflict")
     void createProject_whenProjectWithSameNameAlreadyExists_shouldReturnConflict() throws Exception {
         // Arrange
         var request = new CreateProjectRequestDto(
@@ -258,11 +258,8 @@ public class ProjectControllerTest {
             "{\"description\":\"Abed\"}",
             "{\"workedHours\":-1}",
             "{\"startDate\":\"\"}",
-            "{\"startDate\":\"1\"}",
             "{\"dueDate\":\"\"}",
-            "{\"dueDate\":\"1\"}",
             "{\"projectStatus\":\"\"}",
-            "{\"projectStatus\":\"NA\"}",
             "{\"clientId\":\"\"}",
             "{\"clientId\":-1}",
             "{\"projectType\":\"\"}",
@@ -270,7 +267,7 @@ public class ProjectControllerTest {
             "{\"budget\":\"\"}",
             "{\"budget\":-1}",
     })
-    @DisplayName("Create FixedPriceProject | Invalid Request params | Throws BadRequestException and 400")
+    @DisplayName("Create Fixed Price Project | Invalid request | Returns 400 Bad Request")
     void createFixedPriceProject_whenInvalidRequest_shouldReturnBadRequest(String invalidField) throws Exception {
         // Arrange
         String field = invalidField.split(":")[0];
@@ -301,19 +298,16 @@ public class ProjectControllerTest {
             "{\"description\":\"Abed\"}",
             "{\"workedHours\":-1}",
             "{\"startDate\":\"\"}",
-            "{\"startDate\":\"1\"}",
             "{\"dueDate\":\"\"}",
-            "{\"dueDate\":\"1\"}",
             "{\"projectStatus\":\"\"}",
-            "{\"projectStatus\":\"NA\"}",
             "{\"clientId\":\"\"}",
             "{\"clientId\":-1}",
             "{\"projectType\":\"\"}",
             "{\"projectType\":\"NA\"}",
             "{\"hourlyRate\":\"\"}",
-            "{\"hourlyRate\":\"-1\"}",
+            "{\"hourlyRate\":-1}",
     })
-    @DisplayName("Create HourlyRateProject | Invalid Request params | Throws BadRequestException and 400")
+    @DisplayName("Create Hourly Rate Project | Invalid request | Returns 400 Bad Request")
     void createHourlyRateProject_whenInvalidRequest_shouldReturnBadRequest(String invalidField) throws Exception {
         // Arrange
         String field = invalidField.split(":")[0];
@@ -347,10 +341,26 @@ public class ProjectControllerTest {
         verifyNoInteractions(createProjectService);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "{\"startDate\":\"1\"}",
+            "{\"dueDate\":\"1\"}",
+            "{\"projectStatus\":\"NA\"}"
+    })
+    @DisplayName("Create Project | Unreadable JSON values | Returns 400 Bad Request")
+    void createProject_whenUnreadableJson_shouldReturnBadRequest(String invalidJson) throws Exception {
+        // Act & Assert
+        mockMvc.perform(post("/projects").contentType(MediaType.APPLICATION_JSON).content(invalidJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").isMap());
+
+        verifyNoInteractions(createProjectService);
+    }
     /* ---------- Get All Projects ---------- */
     @Test
-    @DisplayName("Get All Projects | Projects exists | Returns 200 and projects")
-    void getAllProjects_whenProjectsExists_shouldReturnProjects() throws Exception {
+    @DisplayName("Get All Projects | Projects exist | Returns 200 and projects")
+    void getAllProjects_whenProjectsExist_shouldReturnProjects() throws Exception {
         // Arrange
         var response = new GetAllProjectsResponseDto(
                 1L,
@@ -390,8 +400,8 @@ public class ProjectControllerTest {
     }
 
     @Test
-    @DisplayName("Get All Projects | No Projects exists | Returns 200 and empty list")
-    void getAllProjects_whenNoProjectsExists_shouldReturnEmptyList() throws Exception {
+    @DisplayName("Get All Projects | No Projects exist | Returns 200 and empty list")
+    void getAllProjects_whenNoProjectsExist_shouldReturnEmptyList() throws Exception {
         // Arrange
         when(getAllProjectsService.execute()).thenReturn(List.of());
 
@@ -405,7 +415,7 @@ public class ProjectControllerTest {
 
     /* ---------- Get Project by Id ---------- */
     @Test
-    @DisplayName("Get Project by Id | Project exists | Returns 200 and Project")
+    @DisplayName("Get Project by Id | Project exists | Returns 200 and project")
     void getProjectById_whenProjectExists_shouldReturnProject() throws Exception {
         // Arrange
         var response = new GetProjectByIdResponseDto(
@@ -446,8 +456,8 @@ public class ProjectControllerTest {
     }
 
     @Test
-    @DisplayName("Get Project by Id | Project does not exists | Returns 404 Not found")
-    void getProjectById_whenProjectDoesNotExists_shouldReturnNotFound() throws Exception {
+    @DisplayName("Get Project by Id | Project does not exist | Returns 404 Not Found")
+    void getProjectById_whenProjectDoesNotExist_shouldReturnNotFound() throws Exception {
         // Arrange
         when(getProjectByIdService.execute(1L)).thenThrow(new EntityNotFoundException("Project not found"));
 
@@ -480,7 +490,8 @@ public class ProjectControllerTest {
                 "dueDate": "2026-02-25"
             }
             """;
-    private static final UpdateProjectByIdRequestDto updateProjectByIdRequestDto = new UpdateProjectByIdRequestDto(
+
+    private static final UpdateProjectByIdRequestDto UPDATE_PROJECT_BY_ID_REQUEST = new UpdateProjectByIdRequestDto(
             "Updated Project",
             "Updated project description",
             100,
@@ -489,7 +500,7 @@ public class ProjectControllerTest {
     );
 
     @Test
-    @DisplayName("Update Project by Id | Valid request | Returns 200 and updated Project")
+    @DisplayName("Update Project by Id | Valid request | Returns 200 and updated project")
     void updateProjectById_whenValidRequest_shouldReturnUpdatedProject() throws Exception {
         // Arrange
         var response = new UpdateProjectByIdResponseDto(
@@ -505,7 +516,7 @@ public class ProjectControllerTest {
                 new BigDecimal("100"),
                 null
         );
-        when(updateProjectByIdService.execute(1L, updateProjectByIdRequestDto)).thenReturn(response);
+        when(updateProjectByIdService.execute(1L, UPDATE_PROJECT_BY_ID_REQUEST)).thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(put("/projects").param("id", "1")
@@ -527,15 +538,15 @@ public class ProjectControllerTest {
                         }
                         """));
 
-        verify(updateProjectByIdService).execute(1L, updateProjectByIdRequestDto);
+        verify(updateProjectByIdService).execute(1L, UPDATE_PROJECT_BY_ID_REQUEST);
     }
 
 
     @Test
-    @DisplayName("Update Project by Id | Project Not Found | Returns 404 Not Found")
+    @DisplayName("Update Project by Id | Project not found | Returns 404 Not Found")
     void updateProjectById_whenProjectNotFound_shouldReturnNotFound() throws Exception {
         // Arrange
-        when(updateProjectByIdService.execute(1L, updateProjectByIdRequestDto)).thenThrow(new EntityNotFoundException("Project not found"));
+        when(updateProjectByIdService.execute(1L, UPDATE_PROJECT_BY_ID_REQUEST)).thenThrow(new EntityNotFoundException("Project not found"));
 
         // Act & Assert
         mockMvc.perform(put("/projects").param("id", "1")
@@ -543,25 +554,35 @@ public class ProjectControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Project not found"));
 
-        verify(updateProjectByIdService).execute(1L, updateProjectByIdRequestDto);
+        verify(updateProjectByIdService).execute(1L, UPDATE_PROJECT_BY_ID_REQUEST);
     }
 
     @Test
-    @DisplayName("Update Project by Id | Start Date after Due Date | Returns 400 Bad Request")
+    @DisplayName("Update Project by Id | Start date after due date | Returns 400 Bad Request")
     void updateProjectById_whenStartDateAfterDueDate_shouldReturnBadRequest() throws Exception {
         // Arrange
-        String errorMessage = "Invalid date range, 'startDate' must be after 'dueDate'";
-        when(updateProjectByIdService.execute(1L, updateProjectByIdRequestDto))
+        var request = new UpdateProjectByIdRequestDto(
+                "Updated Project",
+                "Updated project description",
+                100,
+                LocalDate.of(2026, 2, 25),
+                LocalDate.of(2026, 2, 1)
+        );
+        String invalidDateRangeJson = UPDATE_PROJECT_JSON
+                .replace("2026-02-01", "2026-02-25")
+                .replace("\"dueDate\": \"2026-02-25\"", "\"dueDate\": \"2026-02-01\"");
+        String errorMessage = "Invalid date range, 'startDate' must not be after 'dueDate'";
+        when(updateProjectByIdService.execute(1L, request))
                 .thenThrow(new IllegalArgumentException(errorMessage));
 
         // Act & Assert
         mockMvc.perform(put("/projects").param("id", "1")
-                        .contentType(MediaType.APPLICATION_JSON).content(UPDATE_PROJECT_JSON)
+                        .contentType(MediaType.APPLICATION_JSON).content(invalidDateRangeJson)
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value(errorMessage));
 
-        verify(updateProjectByIdService).execute(1L, updateProjectByIdRequestDto);
+        verify(updateProjectByIdService).execute(1L, request);
     }
 
     @ParameterizedTest
@@ -571,9 +592,9 @@ public class ProjectControllerTest {
             "{\"description\":\"\"}",
             "{\"description\":\"Abed\"}",
             "{\"workedHours\":-1}",
-            "{\"startDate\":\"2026-02-30\"}",
+            "{\"startDate\":\"2026-13-01\"}",
             "{\"startDate\":\"1\"}",
-            "{\"dueDate\":\"2026-02-30\"}",
+            "{\"dueDate\":\"2026-13-01\"}",
             "{\"dueDate\":\"1\"}",
     })
     @DisplayName("Update Project by Id | Invalid request | Returns 400 Bad Request")
@@ -591,7 +612,8 @@ public class ProjectControllerTest {
     @DisplayName("Update Project by Id | Invalid id | Returns 400 Bad Request")
     void updateProjectById_whenInvalidId_shouldReturnBadRequest() throws Exception {
         // Act & Assert
-        mockMvc.perform(put("/projects").param("id", "invalid"))
+        mockMvc.perform(put("/projects").param("id", "invalid")
+                        .contentType(MediaType.APPLICATION_JSON).content(UPDATE_PROJECT_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error.id").value("Invalid value 'invalid'"));
 
@@ -605,13 +627,13 @@ public class ProjectControllerTest {
             }
             """;
 
-    private static final UpdateProjectStatusByIdRequestDto updateProjectStatusByIdRequestDto = new UpdateProjectStatusByIdRequestDto(
+    private static final UpdateProjectStatusByIdRequestDto UPDATE_PROJECT_STATUS_BY_ID_REQUEST = new UpdateProjectStatusByIdRequestDto(
             ProjectStatus.COMPLETED
     );
 
     @Test
-    @DisplayName("Update Project Status by Id | Valid Request | Returns 200 and Updated Project Status")
-    void updateProjectStatusById_whenValidRequest_shouldReturn200AndUpdatedProjectStatus() throws Exception {
+    @DisplayName("Update Project Status by Id | Valid request | Returns 200 and updated project status")
+    void updateProjectStatusById_whenValidRequest_shouldReturnUpdatedProjectStatus() throws Exception {
         // Arrange
         var response = new UpdateProjectStatusByIdResponseDto(
                 1L,
@@ -620,23 +642,30 @@ public class ProjectControllerTest {
                 1L
         );
 
-        when(updateProjectStatusByIdService.execute(1L, updateProjectStatusByIdRequestDto)).thenReturn(response);
+        when(updateProjectStatusByIdService.execute(1L, UPDATE_PROJECT_STATUS_BY_ID_REQUEST)).thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(patch("/projects").param("id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content(UPDATE_PROJECT_STATUS_BY_ID_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.projectStatus").value("COMPLETED"));
+                .andExpect(content().json("""
+                        {
+                            "id": 1,
+                            "name": "Updated Project Status",
+                            "projectStatus": "COMPLETED",
+                            "clientId": 1
+                        }
+                        """));
 
-        verify(updateProjectStatusByIdService).execute(1L, updateProjectStatusByIdRequestDto);
+        verify(updateProjectStatusByIdService).execute(1L, UPDATE_PROJECT_STATUS_BY_ID_REQUEST);
     }
 
     @Test
-    @DisplayName("Update Project Status by Id | Project Not Found | Returns 404 Not Found")
+    @DisplayName("Update Project Status by Id | Project not found | Returns 404 Not Found")
     void updateProjectStatusById_whenProjectNotFound_shouldReturnNotFound() throws Exception {
         // Arrange
-        when(updateProjectStatusByIdService.execute(1L, updateProjectStatusByIdRequestDto))
+        when(updateProjectStatusByIdService.execute(1L, UPDATE_PROJECT_STATUS_BY_ID_REQUEST))
                 .thenThrow(new EntityNotFoundException("Project not found"));
 
         // Act & Assert
@@ -645,7 +674,7 @@ public class ProjectControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Project not found"));
 
-        verify(updateProjectStatusByIdService).execute(1L, updateProjectStatusByIdRequestDto);
+        verify(updateProjectStatusByIdService).execute(1L, UPDATE_PROJECT_STATUS_BY_ID_REQUEST);
     }
 
     @ParameterizedTest
@@ -661,14 +690,15 @@ public class ProjectControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").isMap());
 
-        verifyNoInteractions(updateProjectByIdService);
+        verifyNoInteractions(updateProjectStatusByIdService);
     }
 
     @Test
     @DisplayName("Update Project Status by Id | Invalid id | Returns 400 Bad Request")
     void updateProjectStatusById_whenInvalidId_shouldReturnBadRequest() throws Exception {
         // Act & Assert
-        mockMvc.perform(patch("/projects").param("id", "invalid"))
+        mockMvc.perform(patch("/projects").param("id", "invalid")
+                        .contentType(MediaType.APPLICATION_JSON).content(UPDATE_PROJECT_STATUS_BY_ID_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error.id").value("Invalid value 'invalid'"));
 

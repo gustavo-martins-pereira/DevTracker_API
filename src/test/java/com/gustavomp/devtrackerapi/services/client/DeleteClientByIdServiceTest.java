@@ -26,8 +26,8 @@ public class DeleteClientByIdServiceTest {
     private DeleteClientByIdService deleteClientByIdService;
 
     @Test
-    @DisplayName("Delete Client | Successfully | 'Delete' the client by the Id ")
-    void execute_whenClientIsFounded_shouldDeleteClient() {
+    @DisplayName("Delete Client | Existing client | Deactivates the client")
+    void execute_whenClientExists_shouldDeleteClient() {
         // Arrange
         Client client = new Client(1L, "Ana", "ana@example.com", "12345678", true);
         when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
@@ -42,12 +42,12 @@ public class DeleteClientByIdServiceTest {
     }
 
     @Test
-    @DisplayName("Delete Client | Client not found | Throws EntityNotFoundException ")
-    void execute_whenClientIsNotFounded_shouldThrowEntityNotFoundException() {
+    @DisplayName("Delete Client | Client not found | Throws EntityNotFoundException")
+    void execute_whenClientDoesNotExist_shouldThrowEntityNotFoundException() {
         // Arrange
         when(clientRepository.findById(1L)).thenReturn(Optional.empty());
 
-        // Act + Assert
+        // Act & Assert
         assertThrows(EntityNotFoundException.class, () -> deleteClientByIdService.execute(1L));
 
         verify(clientRepository, never()).save(any());

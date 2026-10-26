@@ -85,7 +85,7 @@ public class CreateClientServiceTest {
     }
 
     @Test
-    @DisplayName("Create Client | Matching client exists | Returns EntityAlreadyExistsException ")
+    @DisplayName("Create Client | Matching client exists | Throws EntityAlreadyExistsException")
     void execute_whenMatchingClientExists_shouldThrowEntityAlreadyExistsException() {
         // Arrange
         Client existingClient = new Client();

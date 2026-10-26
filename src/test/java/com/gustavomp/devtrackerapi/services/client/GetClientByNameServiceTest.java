@@ -61,8 +61,8 @@ public class GetClientByNameServiceTest {
     }
 
     @Test
-    @DisplayName("Get Client by Name | No clients existing with the searched name | Returns EntityNotFoundException")
-    void execute_whenSearchByUnexistedName_shouldThrowsEntityNotFoundException() {
+    @DisplayName("Get Client by Name | Client not found | Throws EntityNotFoundException")
+    void execute_whenClientDoesNotExist_shouldThrowEntityNotFoundException() {
         // Arrange
         String searchedName = "Bob";
 

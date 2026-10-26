@@ -31,8 +31,8 @@ public class GetAllClientsServiceTest {
     private GetAllClientsService getAllClientsService;
 
     @Test
-    @DisplayName("Get All Clients | With Active/Innactive clients | Returns the active clients")
-    void execute_whenClientsExists_shouldReturnClients() {
+    @DisplayName("Get All Clients | Active and inactive clients | Returns the active clients")
+    void execute_whenClientsExist_shouldReturnClients() {
         // Arrange
         Client activeClient = new Client(1L, "Ana", "ana@example.com", "12345678", true);
         Client inactiveClient = new Client(2L, "Bob", "bob@example.com", "87654321", false);
@@ -60,8 +60,8 @@ public class GetAllClientsServiceTest {
     }
 
     @Test
-    @DisplayName("Get All Clients | No clients exists | Returns an empty clients list")
-    void execute_whenClientsNotExists_shouldReturnEmptyList() {
+    @DisplayName("Get All Clients | No clients exist | Returns an empty list")
+    void execute_whenNoClientsExist_shouldReturnEmptyList() {
         // Arrange
         when(clientRepository.findAll()).thenReturn(List.of());
 

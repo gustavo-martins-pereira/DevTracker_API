@@ -37,7 +37,7 @@ public class UpdateProjectByIdServiceTest {
 
     @Test
     @DisplayName("Update Project | Valid dates | Saves and returns the updated project")
-    void execute_whenProjectIsFounded_shouldReturnUpdatedProject() {
+    void execute_whenProjectExists_shouldReturnUpdatedProject() {
         // Arrange
         Project oldProject = new FixedPriceProject();
         when(projectRepository.findById(1L)).thenReturn(Optional.of(oldProject));
@@ -131,7 +131,7 @@ public class UpdateProjectByIdServiceTest {
 
     @Test
     @DisplayName("Update Project | Project not found | Throws EntityNotFoundException")
-    void execute_whenProjectIsNotFounded_shouldThrowEntityNotFoundException() {
+    void execute_whenProjectDoesNotExist_shouldThrowEntityNotFoundException() {
         // Arrange
         UpdateProjectByIdRequestDto request = new UpdateProjectByIdRequestDto(
                 "Website",
