@@ -146,7 +146,6 @@ public class ClientControllerTest {
     }
 
     @Test
-
     @DisplayName("Create Client | Malformed JSON | Returns 400 Bad Request")
     void createClient_whenMalformedJson_shouldReturnBadRequest() throws Exception {
         // Act & Assert

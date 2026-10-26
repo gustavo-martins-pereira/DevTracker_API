@@ -24,7 +24,7 @@ public record CreateProjectRequestDto(
         @NotNull(message = "The 'startDate' is required")
         LocalDate startDate,
 
-        @Future(message = "The 'dueDate' must be in the future")
+        @NotNull(message = "The 'dueDate' is required")
         LocalDate dueDate,
 
         @NotNull(message = "The 'projectStatus' is required")
