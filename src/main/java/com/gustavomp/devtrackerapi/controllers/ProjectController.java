@@ -5,7 +5,6 @@ import com.gustavomp.devtrackerapi.dtos.requests.project.UpdateProjectByIdReques
 import com.gustavomp.devtrackerapi.dtos.requests.project.UpdateProjectStatusByIdRequestDto;
 import com.gustavomp.devtrackerapi.dtos.responses.project.*;
 import com.gustavomp.devtrackerapi.models.enums.ProjectStatus;
-import com.gustavomp.devtrackerapi.services.client.*;
 import com.gustavomp.devtrackerapi.services.project.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

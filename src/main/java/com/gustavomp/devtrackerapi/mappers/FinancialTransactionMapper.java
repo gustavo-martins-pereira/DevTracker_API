@@ -24,9 +24,6 @@ public interface FinancialTransactionMapper {
     @Mapping(target = "projectId", source = "project.id")
     CreateFTResponseDto toCreateFTResponseDto(FinancialTransaction entity);
 
-    // Get All Financial Transaction by Project ID
-    GetAllFTByProjectIdResponseDto toGetAllFTByProjectIdResponseDto(FinancialTransaction entity);
-
     // Get Financial Transaction by ID
     @Mapping(target = "amount", source = "responseAmount")
     @Mapping(target = "projectId", source = "entity.project.id")
@@ -39,13 +36,14 @@ public interface FinancialTransactionMapper {
     GetAllFTByProjectIdResponseDto toGetAllFTByProjectIdResponseDto(FinancialTransaction entity, BigDecimal responseAmount);
 
     default String mapProjectType(Project project) {
-        if (project == null) return null;
+        return switch (project) {
+            case null -> null;
+            case FixedPriceProject _ -> "FIXED_PRICE";
+            case HourlyRateProject _ -> "HOURLY_RATE";
+            default ->
+                    throw new IllegalArgumentException("Unsupported project subclass: " + project.getClass().getName());
+        };
 
-        if (project instanceof FixedPriceProject) return "FIXED_PRICE";
-
-        if (project instanceof HourlyRateProject) return "HOURLY_RATE";
-
-        throw new IllegalArgumentException("Unsupported project subclass: " + project.getClass().getName());
     }
 
 }

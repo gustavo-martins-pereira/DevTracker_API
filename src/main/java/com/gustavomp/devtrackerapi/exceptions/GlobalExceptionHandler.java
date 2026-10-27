@@ -105,10 +105,10 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
-//        return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
+        return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+    }
 
     private ResponseEntity<Map<String, Object>> buildResponseEntity(HttpStatus status, Object errorContent) {
         Map<String, Object> response = Map.of(

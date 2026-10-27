@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record AwesomeCurrencyQuoteResponseDto(
         String code,
 
-        @JsonProperty("codein")
+        @JsonProperty("codeIn")
         String codeIn,
 
         String bid
