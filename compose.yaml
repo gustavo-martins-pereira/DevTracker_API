@@ -1,0 +1,18 @@
+services:
+  api:
+    build: .
+    image: devtracker-api:1.0
+    ports:
+      - "127.0.0.1:8081:8080"
+    environment:
+      SERVER_PORT: "8080"
+      SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/devtracker"
+      SPRING_DATASOURCE_USERNAME: "sa"
+      SPRING_DATASOURCE_PASSWORD: "${DB_PASSWORD:?Set DB_PASSWORD in .env}"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+      SPRING_H2_CONSOLE_ENABLED: "false"
+    volumes:
+      - devtracker-data:/data
+
+volumes:
+  devtracker-data:
