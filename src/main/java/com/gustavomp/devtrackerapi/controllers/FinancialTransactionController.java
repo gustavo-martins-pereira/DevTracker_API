@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -29,10 +31,17 @@ public class FinancialTransactionController {
 
     /* ---------- POST ---------- */
     @PostMapping
-    public ResponseEntity<CreateFTResponseDto> createFinancialTransaction(@RequestBody @Valid CreateFTRequestDto createFTRequestDto) {
+    public ResponseEntity<CreateFTResponseDto> createFinancialTransaction(
+            @RequestBody @Valid CreateFTRequestDto createFTRequestDto,
+            UriComponentsBuilder uriComponentsBuilder
+    ) {
         CreateFTResponseDto createFTResponseDto = createFTService.execute(createFTRequestDto);
 
-        return new ResponseEntity<>(createFTResponseDto, HttpStatus.CREATED);
+        URI uri = uriComponentsBuilder.path("/financial-transactions/{id}")
+                .buildAndExpand(createFTResponseDto.id())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(createFTResponseDto);
     }
 
     /* ---------- GET ---------- */

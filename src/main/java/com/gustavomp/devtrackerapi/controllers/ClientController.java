@@ -9,10 +9,11 @@ import com.gustavomp.devtrackerapi.dtos.responses.client.UpdateClientByIdRespons
 import com.gustavomp.devtrackerapi.services.client.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -28,10 +29,18 @@ public class ClientController {
 
     /* ---------- POST ---------- */
     @PostMapping
-    public ResponseEntity<CreateClientResponseDto> createClient(@RequestBody @Valid CreateClientRequestDto createClientRequestDto) {
+    public ResponseEntity<CreateClientResponseDto> createClient(
+            @RequestBody @Valid CreateClientRequestDto createClientRequestDto,
+            UriComponentsBuilder uriComponentsBuilder
+    ) {
         CreateClientResponseDto createClientResponseDto = createClientService.execute(createClientRequestDto);
 
-        return new ResponseEntity<>(createClientResponseDto, HttpStatus.CREATED);
+        URI uri = uriComponentsBuilder.path("/clients")
+                .queryParam("name", "{name}")
+                .buildAndExpand(createClientResponseDto.name())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(createClientResponseDto);
     }
 
     /* ---------- GET ---------- */

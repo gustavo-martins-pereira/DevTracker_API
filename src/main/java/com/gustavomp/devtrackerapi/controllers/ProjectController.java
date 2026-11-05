@@ -8,10 +8,11 @@ import com.gustavomp.devtrackerapi.models.enums.ProjectStatus;
 import com.gustavomp.devtrackerapi.services.project.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -27,10 +28,17 @@ public class ProjectController {
 
     /* ---------- POST ---------- */
     @PostMapping
-    public ResponseEntity<CreateProjectResponseDto> createProject(@RequestBody @Valid CreateProjectRequestDto createProjectRequestDto) {
+    public ResponseEntity<CreateProjectResponseDto> createProject(
+            @RequestBody @Valid CreateProjectRequestDto createProjectRequestDto,
+            UriComponentsBuilder uriComponentsBuilder
+    ) {
         CreateProjectResponseDto createProjectResponseDto = createProjectService.execute(createProjectRequestDto);
 
-        return new ResponseEntity<>(createProjectResponseDto, HttpStatus.CREATED);
+        URI uri = uriComponentsBuilder.path("/projects/{id}")
+                .buildAndExpand(createProjectResponseDto.id())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(createProjectResponseDto);
     }
 
     /* ---------- GET ---------- */
