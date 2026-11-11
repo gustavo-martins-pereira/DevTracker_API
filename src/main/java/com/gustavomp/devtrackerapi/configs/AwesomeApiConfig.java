@@ -10,7 +10,7 @@ import java.net.http.HttpClient;
 import java.time.Duration;
 
 @Configuration
-public class RestClientConfig {
+public class AwesomeApiConfig {
 
     @Bean
     public RestClient awesomeApiRestClient(@Value("${awesomeapi.base-url:https://economia.awesomeapi.com.br}") String baseUrl) {

@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "projects")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
