@@ -1,5 +1,6 @@
 package com.gustavomp.devtrackerapi.exceptions;
 
+import com.auth0.jwt.exceptions.JWTCreationException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -114,6 +115,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(JWTCreationException.class)
+    public ResponseEntity<Map<String, Object>> handleJWTCreationException(JWTCreationException ex) {
         return buildResponseEntity(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 

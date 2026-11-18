@@ -2,8 +2,10 @@ package com.gustavomp.devtrackerapi.controllers;
 
 import com.gustavomp.devtrackerapi.configs.SecurityConfig;
 import com.gustavomp.devtrackerapi.dtos.requests.user.LoginRequestDto;
+import com.gustavomp.devtrackerapi.dtos.responses.user.LoginResponseDto;
 import com.gustavomp.devtrackerapi.models.User;
 import com.gustavomp.devtrackerapi.repositories.UserRepository;
+import com.gustavomp.devtrackerapi.services.authentication.TokenService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
@@ -22,9 +26,10 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
 
     private final UserRepository userRepository;
+    private final TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
         // DEV
         var user = new User();
         user.setUsername("dev");
@@ -32,11 +37,12 @@ public class AuthenticationController {
         userRepository.save(user);
         // DEV
 
-        var credentials = new UsernamePasswordAuthenticationToken(loginRequestDto.username(), loginRequestDto.password());
+        var token = new UsernamePasswordAuthenticationToken(loginRequestDto.username(), loginRequestDto.password());
 
-        authenticationManager.authenticate(credentials);
+        var authentication = authenticationManager.authenticate(token);
+        String accessToken = tokenService.generateToken((User) Objects.requireNonNull(authentication.getPrincipal()));
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new LoginResponseDto(accessToken));
     }
 
 }
