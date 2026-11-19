@@ -1,6 +1,6 @@
 package com.gustavomp.devtrackerapi.services.user;
 
-import com.gustavomp.devtrackerapi.dtos.requests.user.RegisterRequestDto;
+import com.gustavomp.devtrackerapi.dtos.requests.user.RegisterUserRequestDto;
 import com.gustavomp.devtrackerapi.exceptions.EntityAlreadyExistsException;
 import com.gustavomp.devtrackerapi.mappers.UserMapper;
 import com.gustavomp.devtrackerapi.models.User;
@@ -17,12 +17,12 @@ public class RegisterUserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public void execute(RegisterRequestDto registerRequestDto) {
-        Optional<User> existingUser = userRepository.findByUsername(registerRequestDto.username());
+    public void execute(RegisterUserRequestDto registerUserRequestDto) {
+        Optional<User> existingUser = userRepository.findByUsername(registerUserRequestDto.username());
 
         if (existingUser.isPresent()) throw new EntityAlreadyExistsException("Username already taken");
 
-        User user = userMapper.toEntity(registerRequestDto);
+        User user = userMapper.toEntity(registerUserRequestDto);
         userRepository.save(user);
     }
 

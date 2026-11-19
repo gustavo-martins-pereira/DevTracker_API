@@ -1,14 +1,12 @@
 package com.gustavomp.devtrackerapi.filters;
 
 import com.gustavomp.devtrackerapi.models.User;
-import com.gustavomp.devtrackerapi.repositories.UserRepository;
 import com.gustavomp.devtrackerapi.services.authentication.TokenService;
 import com.gustavomp.devtrackerapi.services.user.GetUserByUsernameService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;

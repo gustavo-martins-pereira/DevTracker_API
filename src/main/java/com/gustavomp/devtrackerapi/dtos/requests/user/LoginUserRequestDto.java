@@ -2,7 +2,7 @@ package com.gustavomp.devtrackerapi.dtos.requests.user;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record LoginRequestDto(
+public record LoginUserRequestDto(
         @NotBlank
         String username,
 

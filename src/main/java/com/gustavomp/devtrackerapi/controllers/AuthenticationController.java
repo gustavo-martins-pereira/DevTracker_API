@@ -1,7 +1,7 @@
 package com.gustavomp.devtrackerapi.controllers;
 
-import com.gustavomp.devtrackerapi.dtos.requests.user.LoginRequestDto;
-import com.gustavomp.devtrackerapi.dtos.requests.user.RegisterRequestDto;
+import com.gustavomp.devtrackerapi.dtos.requests.user.LoginUserRequestDto;
+import com.gustavomp.devtrackerapi.dtos.requests.user.RegisterUserRequestDto;
 import com.gustavomp.devtrackerapi.dtos.responses.user.LoginResponseDto;
 import com.gustavomp.devtrackerapi.services.user.LoginUserService;
 import com.gustavomp.devtrackerapi.services.user.RegisterUserService;
@@ -22,15 +22,15 @@ public class AuthenticationController {
     private final LoginUserService loginUserService;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody @Valid RegisterRequestDto registerRequestDto) {
-        registerUserService.execute(registerRequestDto);
+    public ResponseEntity<Void> registerUser(@RequestBody @Valid RegisterUserRequestDto registerUserRequestDto) {
+        registerUserService.execute(registerUserRequestDto);
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
-        LoginResponseDto loginResponseDto = loginUserService.execute(loginRequestDto);
+    public ResponseEntity<LoginResponseDto> loginUser(@RequestBody @Valid LoginUserRequestDto loginUserRequestDto) {
+        LoginResponseDto loginResponseDto = loginUserService.execute(loginUserRequestDto);
 
         return ResponseEntity.ok(loginResponseDto);
     }

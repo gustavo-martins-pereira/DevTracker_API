@@ -1,6 +1,6 @@
 package com.gustavomp.devtrackerapi.services.user;
 
-import com.gustavomp.devtrackerapi.dtos.requests.user.LoginRequestDto;
+import com.gustavomp.devtrackerapi.dtos.requests.user.LoginUserRequestDto;
 import com.gustavomp.devtrackerapi.dtos.responses.user.LoginResponseDto;
 import com.gustavomp.devtrackerapi.mappers.UserMapper;
 import com.gustavomp.devtrackerapi.models.User;
@@ -21,8 +21,8 @@ public class LoginUserService {
     private final TokenService tokenService;
     private final UserMapper userMapper;
 
-    public LoginResponseDto execute(LoginRequestDto loginRequestDto) {
-        var authentication = new UsernamePasswordAuthenticationToken(loginRequestDto.username(), loginRequestDto.password());
+    public LoginResponseDto execute(LoginUserRequestDto loginUserRequestDto) {
+        var authentication = new UsernamePasswordAuthenticationToken(loginUserRequestDto.username(), loginUserRequestDto.password());
 
         Authentication authenticatedUser = authenticationManager.authenticate(authentication);
         String token = tokenService.generateToken((User) Objects.requireNonNull(authenticatedUser.getPrincipal()));
