@@ -1,17 +1,16 @@
 package com.gustavomp.devtrackerapi.controllers;
 
-import com.gustavomp.devtrackerapi.configs.SecurityConfig;
 import com.gustavomp.devtrackerapi.dtos.requests.user.LoginRequestDto;
+import com.gustavomp.devtrackerapi.dtos.requests.user.RegisterRequestDto;
 import com.gustavomp.devtrackerapi.dtos.responses.user.LoginResponseDto;
 import com.gustavomp.devtrackerapi.models.User;
-import com.gustavomp.devtrackerapi.repositories.UserRepository;
 import com.gustavomp.devtrackerapi.services.authentication.TokenService;
+import com.gustavomp.devtrackerapi.services.user.RegisterUserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,18 +25,19 @@ public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
 
-    private final UserRepository userRepository;
     private final TokenService tokenService;
+
+    private final RegisterUserService registerUserService;
+
+    @PostMapping("/register")
+    public ResponseEntity<Void> register(@RequestBody @Valid RegisterRequestDto registerRequestDto) {
+        registerUserService.execute(registerRequestDto);
+
+        return ResponseEntity.noContent().build();
+    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto loginRequestDto) {
-        // DEV
-        var user = new User();
-        user.setUsername("dev");
-        user.setPassword(new BCryptPasswordEncoder().encode("dev"));
-        userRepository.save(user);
-        // DEV
-
         var token = new UsernamePasswordAuthenticationToken(loginRequestDto.username(), loginRequestDto.password());
 
         var authentication = authenticationManager.authenticate(token);
