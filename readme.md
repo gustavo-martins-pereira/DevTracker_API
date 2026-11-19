@@ -2,7 +2,7 @@
 
 **Gerencie clientes, projetos de desenvolvimento e finanças por meio de uma API REST em Java.**
 
-[![Read this README in English](https://img.shields.io/badge/README-Read_in_English-0969DA?style=for-the-badge)](README.en.md)
+[![Read this README in English](https://img.shields.io/badge/README-Read_in_English-0969DA?style=for-the-badge)](readme.en.md)
 
 ![Java 25](https://img.shields.io/badge/Java-25-ED8B00?style=flat-square)
 ![Spring Boot 4.1.1](https://img.shields.io/badge/Spring_Boot-4.1.1-6DB33F?style=flat-square)
@@ -17,6 +17,7 @@ Desenvolvido como projeto de aprendizado em backend, reúne endpoints REST, regr
 
 - [Funcionalidades](#funcionalidades)
 - [Tecnologias](#tecnologias)
+- [Autenticação e segurança](#autenticação-e-segurança)
 - [Arquitetura](#arquitetura)
 - [Como executar](#como-executar)
 - [Execução com Docker](#execução-com-docker)
@@ -30,6 +31,8 @@ Desenvolvido como projeto de aprendizado em backend, reúne endpoints REST, regr
 
 ## Funcionalidades
 
+- Cadastrar usuários e efetuar login com emissão de JWT.
+- Proteger as operações com autenticação stateless e senhas armazenadas como hash BCrypt.
 - Criar, consultar, atualizar e desativar clientes.
 - Criar projetos com preço fixo e orçamento ou cobrança por hora e valor da hora.
 - Acompanhar horas trabalhadas, datas e status dos projetos.
@@ -48,6 +51,8 @@ Desenvolvido como projeto de aprendizado em backend, reúne endpoints REST, regr
 | --- | --- |
 | Java 25 | Linguagem e ambiente de execução |
 | Spring Boot 4.1.1 / Spring MVC | API REST e configuração da aplicação |
+| Spring Security / BCrypt | Autenticação, controle de acesso e hash de senhas |
+| Auth0 Java JWT 4.6.2 | Emissão e verificação de tokens JWT |
 | Spring Data JPA / Hibernate | Persistência e mapeamento de entidades |
 | H2 | Banco de dados embarcado |
 | Jakarta Bean Validation | Validação das requisições |
@@ -57,6 +62,31 @@ Desenvolvido como projeto de aprendizado em backend, reúne endpoints REST, regr
 | Maven Wrapper | Build e gerenciamento de dependências |
 | Docker / Docker Compose | Criação da imagem, configuração e armazenamento persistente |
 
+## Autenticação e segurança
+
+Cadastre um usuário em `POST /auth/register` e use as mesmas credenciais em `POST /auth/login`. Ambos recebem `username` e `password` obrigatórios. O cadastro retorna `204 No Content`, rejeita nomes de usuário já utilizados com `409` e armazena a senha como hash BCrypt.
+
+O login retorna `200 OK` com um JSON no formato `{"token":"<jwt>"}`. O JWT é assinado com HS256, identifica o emissor como `DevTracker API`, contém o username em `sub` e expira em duas horas. Efetue login novamente para obter outro token após a expiração.
+
+A configuração libera requisições `POST /auth/**`. As demais rotas exigem autenticação, incluindo clientes, projetos, transações, câmbio e o console H2. Envie o token nas requisições protegidas pelo cabeçalho `Authorization`.
+
+```http
+Authorization: Bearer <jwt>
+```
+
+O `SecurityFilter` verifica o JWT, consulta o usuário e registra suas autoridades no contexto do Spring Security antes da autorização. Todos os usuários recebem `ROLE_USER`. As consultas atuais compartilham clientes, projetos e transações entre os usuários autenticados, sem filtro por proprietário.
+
+### Chave de assinatura
+
+Na execução local, defina `JWT_SECRET` no ambiente antes de iniciar a API, inclusive ao executar o JAR.
+
+```powershell
+$env:JWT_SECRET = "substitua-por-uma-chave-aleatoria-forte"
+.\mvnw.cmd spring-boot:run
+```
+
+O `application.properties` utiliza `api.security.jwt.secret=${JWT_SECRET:12345}`. O valor `12345` é o fallback de desenvolvimento. A variável precisa estar disponível ao processo Java. Um arquivo `.env` sozinho não é carregado pelo comando Maven nem pelo JAR.
+
 ## Arquitetura
 
 A aplicação separa o tratamento das requisições HTTP, as operações de negócio, a persistência e o mapeamento dos DTOs.
@@ -65,7 +95,7 @@ A aplicação separa o tratamento das requisições HTTP, as operações de neg�
 Requisição HTTP
     |
     v
-Controller -> Service -> Repository -> H2
+SecurityFilter (JWT) -> Spring Security -> Controller -> Service -> Repository -> H2
                  |
                  +-> Mapper -> DTO de resposta
                  |
@@ -77,6 +107,8 @@ src/
 ├── main/
 │   ├── java/com/gustavomp/devtrackerapi/
 │   │   ├── annotations/    # Anotações de validação personalizadas
+│   │   ├── configs/       # Configuração de segurança e integrações
+│   │   ├── filters/       # Filtro de autenticação JWT
 │   │   ├── controllers/   # Endpoints HTTP
 │   │   ├── dtos/          # Records de requisição e resposta
 │   │   ├── exceptions/    # Exceções e tratamento de erros HTTP
@@ -122,7 +154,7 @@ No Linux ou macOS, utilize `./mvnw` no lugar de `.\mvnw.cmd`. Se necessário, ex
 .\mvnw.cmd spring-boot:run
 ```
 
-A URL base da API local é `http://localhost:8080`. Para consultar os clientes, acesse [http://localhost:8080/clients](http://localhost:8080/clients).
+A URL base da API local é `http://localhost:8080`. Para consultar `/clients`, envie uma requisição com o token obtido no login.
 
 Também é possível executar o JAR gerado:
 
@@ -144,7 +176,17 @@ Edite o arquivo `.env` e defina uma senha para o ambiente de desenvolvimento loc
 
 ```dotenv
 DB_PASSWORD=substitua-pela-sua-senha-local
+JWT_SECRET=substitua-por-uma-chave-aleatoria-forte
 ```
+
+O `.env.example` também contém `JWT_SECRET`, mas o `compose.yaml` atual repassa apenas as variáveis declaradas em `environment`. Para fornecer sua chave ao contêiner, acrescente a linha abaixo nesse bloco antes de iniciar o Compose e defina `JWT_SECRET` no `.env`.
+
+```yaml
+JWT_SECRET: "${JWT_SECRET:?Set JWT_SECRET in .env}"
+```
+
+Sem esse repasse, o contêiner utiliza o fallback `12345` de `application.properties`.
+
 
 O arquivo `.env` está excluído do Git. Não inclua credenciais nos commits.
 
@@ -157,7 +199,7 @@ docker compose up -d --build
 
 O Dockerfile copia o JAR de `target/`; ele não compila o código Java. Após alterar o código, gere novamente o JAR antes de reconstruir a imagem.
 
-A URL base no Docker é `http://localhost:8081`. Consulte os clientes em [http://localhost:8081/clients](http://localhost:8081/clients). O Compose mapeia a porta `8081` do computador para a porta `8080` do contêiner e limita o acesso ao localhost.
+A URL base no Docker é `http://localhost:8081`. Consulte `/clients` enviando o token obtido no login. O Compose mapeia a porta `8081` do computador para a porta `8080` do contêiner e limita o acesso ao localhost.
 
 ### 3. Consultar o status e os logs
 
@@ -180,6 +222,15 @@ O volume nomeado preserva os arquivos do banco H2 mesmo quando o contêiner é s
 ## Endpoints da API
 
 Utilize `http://localhost:8080` na execução local ou `http://localhost:8081` com Docker Compose.
+
+### Autenticação
+
+| Método | Endpoint | Acesso | Resposta de sucesso |
+| --- | --- | --- | --- |
+| POST | `/auth/register` | Público | `204`, sem corpo |
+| POST | `/auth/login` | Público | `200`, com `token` |
+
+Todos os endpoints de negócio abaixo exigem o cabeçalho Bearer.
 
 ### Clientes
 
@@ -227,14 +278,17 @@ A conversão de moeda e o endpoint de cotação dependem de acesso ao provedor e
 
 Importe a [coleção do DevTracker no Postman](postman/DevTracker.postman_collection.json) para explorar a API sem escrever manualmente as requisições HTTP.
 
-A coleção contém 19 requisições organizadas em quatro pastas:
+A coleção contém 21 requisições organizadas em cinco pastas:
 
 | Pasta | Requisições |
 | --- | --- |
+| User | Cadastrar usuário e efetuar login |
 | Client | Criar, listar, buscar por nome, atualizar e desativar |
 | Project | Criar, listar, filtrar por status, buscar por ID, atualizar dados e status |
 | Financial Transaction | Criar, listar por projeto, buscar por ID, consultar valores em USD e excluir |
 | Awesome API | Consultar a cotação; inclui uma requisição de conversão ainda não implementada |
+
+Na pasta **User**, execute primeiro **Register** (`POST /auth/register`) e depois **Login** (`POST /auth/login`). Ambas incluem um corpo JSON com `username` e `password`. Os valores `dev` são exemplos de preenchimento. Copie o valor de `token` da resposta do login e configure **Authorization → Bearer Token** nas requisições protegidas. A coleção exige configurar o Bearer manualmente, pois não inclui autenticação herdada nem script para armazenar o token automaticamente.
 
 ### Importar e configurar
 
@@ -256,13 +310,43 @@ A variável exportada está vazia. As requisições utilizam essa variável dest
 {{CARREIRA_BACKEND_JAVA_CHECKPOINT_1_DEVTRACKER}}/clients
 ```
 
-Crie primeiro um cliente, depois um projeto vinculado a ele e, por fim, as transações do projeto. Substitua os IDs de exemplo pelos IDs retornados pela API. Na busca de cliente por nome, substitua o valor de exemplo `name` pelo nome de um cliente existente.
+Após cadastrar o usuário, efetuar login e configurar o Bearer Token, crie um cliente, depois um projeto vinculado a ele e, por fim, as transações do projeto. Substitua os IDs de exemplo pelos IDs retornados pela API. Na busca de cliente por nome, substitua o valor de exemplo `name` pelo nome de um cliente existente.
 
 > A coleção inclui `GET /awesomeapi/currency/convert?amount=100`, ainda não implementado no controller atual. Para utilizar a conversão disponível, consulte os endpoints de transações com `currency=USD`.
 
 ## Exemplos de requisições
 
 Os IDs abaixo são exemplos. Utilize os IDs retornados ao criar seus próprios recursos.
+
+### Cadastro e login
+
+Os dois endpoints recebem o mesmo formato de entrada. Execute primeiro `POST /auth/register` e depois `POST /auth/login`.
+
+```json
+{
+  "username": "dev",
+  "password": "example-password"
+}
+```
+
+O login devolve:
+
+```json
+{
+  "token": "<jwt>"
+}
+```
+
+Exemplo do fluxo em PowerShell, usando a URL do Docker:
+
+```powershell
+$baseUrl = "http://localhost:8081"
+$credentials = @{ username = "dev"; password = "example-password" } | ConvertTo-Json
+Invoke-RestMethod -Method Post -Uri "$baseUrl/auth/register" -ContentType "application/json" -Body $credentials
+$login = Invoke-RestMethod -Method Post -Uri "$baseUrl/auth/login" -ContentType "application/json" -Body $credentials
+$headers = @{ Authorization = "Bearer $($login.token)" }
+Invoke-RestMethod -Method Get -Uri "$baseUrl/clients" -Headers $headers
+```
 
 ### Criar um cliente
 
@@ -287,7 +371,7 @@ $body = @{
     active = $true
 } | ConvertTo-Json
 
-Invoke-RestMethod -Method Post -Uri "http://localhost:8081/clients" -ContentType "application/json" -Body $body
+Invoke-RestMethod -Method Post -Uri "http://localhost:8081/clients" -ContentType "application/json" -Headers $headers -Body $body
 ```
 
 ### Criar um projeto com preço fixo
@@ -346,14 +430,15 @@ A criação de projetos também valida o tipo de cobrança: projetos com preço 
 | --- | --- |
 | 200 | Consulta ou atualização concluída |
 | 201 | Recurso criado |
-| 204 | Exclusão ou desativação concluída, sem corpo na resposta |
+| 204 | Cadastro de usuário, exclusão ou desativação concluída, sem corpo na resposta |
 | 400 | Requisição inválida, falha de conversão ou argumento inválido |
+| 401 | Credenciais inválidas no login ou ausência de autenticação nas rotas protegidas |
 | 404 | Recurso não encontrado |
 | 409 | Conflito com um recurso existente |
 | 502 | Falha no provedor externo de câmbio |
 | 500 | Erro inesperado no servidor |
 
-As respostas de erro contêm `timestamp`, `status` e `error`. O campo `error` pode conter uma mensagem ou um mapa de erros por campo.
+Os erros tratados por `GlobalExceptionHandler` contêm `timestamp`, `status` e `error`. O campo `error` pode conter uma mensagem ou um mapa de erros por campo.
 
 Exemplo ilustrativo de resposta de validação:
 
@@ -368,6 +453,8 @@ Exemplo ilustrativo de resposta de validação:
 ```
 
 As chaves e os valores dos enums nos exemplos mantêm o contrato original da API. As mensagens de erro podem estar em inglês.
+
+Falhas lançadas no filtro JWT seguem o processamento de erros da cadeia Servlet. O handler dos controllers não garante o mesmo JSON ou status para tokens inválidos ou expirados.
 
 ## Testes
 
@@ -392,12 +479,16 @@ All Tests
 ├── Controllers
 │   ├── Client Controller
 │   ├── Project Controller
-│   └── Financial Transaction Controller
+│   ├── Financial Transaction Controller
+│   └── Authentication Controller
 └── Services
     ├── Client
     ├── Financial Transaction
-    └── Project
+    ├── Project
+    └── User
 ```
+
+Os testes de autenticação cobrem cadastro, login, validação dos DTOs, consulta de usuário e conflitos de username. Os testes de controllers usam MockMvc com `standaloneSetup`, sem exercitar a cadeia completa de segurança. Confira também o acesso sem token e com token válido executando a aplicação.
 
 As suítes organizam os testes existentes. Em cada execução, escolha a suíte agregadora ou a descoberta convencional de testes para evitar executar os mesmos casos duas vezes.
 
@@ -410,7 +501,8 @@ As suítes organizam os testes existentes. Em cada execução, escolha a suíte 
 | Armazenamento H2 | Em memória | Arquivo em `/data/devtracker` |
 | Gerenciamento do schema pelo Hibernate | `create-drop` | `update` |
 | Senha do banco | Vazia | Definida por `DB_PASSWORD` |
-| Console web do H2 | Habilitado em `/h2-console` | Desabilitado |
+| Chave JWT | `JWT_SECRET`, com fallback `12345` | Fallback `12345` até configurar o repasse da variável |
+| Console web do H2 | Habilitado em `/h2-console`, sujeito à segurança | Desabilitado |
 
 O Compose monta o volume `devtracker-data` em `/data`. O nome real do volume no Docker normalmente inclui o prefixo do projeto Compose.
 

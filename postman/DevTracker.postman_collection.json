@@ -475,6 +475,65 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"dev\",\r\n    \"password\": \"dev\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{CARREIRA_BACKEND_JAVA_CHECKPOINT_1_DEVTRACKER}}/auth/login",
+              "host": [
+                "{{CARREIRA_BACKEND_JAVA_CHECKPOINT_1_DEVTRACKER}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"dev\",\r\n    \"password\": \"dev\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{CARREIRA_BACKEND_JAVA_CHECKPOINT_1_DEVTRACKER}}/auth/register",
+              "host": [
+                "{{CARREIRA_BACKEND_JAVA_CHECKPOINT_1_DEVTRACKER}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "variable": [
