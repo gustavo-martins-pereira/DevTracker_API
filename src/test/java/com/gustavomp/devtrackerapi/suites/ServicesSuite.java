@@ -11,6 +11,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
         ClientServicesSuite.class,
         FinancialTransactionServicesSuite.class,
         ProjectServicesSuite.class,
+        UserServicesSuite.class,
 })
 @IncludeClassNamePatterns(".*")
 public class ServicesSuite {}

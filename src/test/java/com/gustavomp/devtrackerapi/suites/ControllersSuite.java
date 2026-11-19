@@ -1,5 +1,6 @@
 package com.gustavomp.devtrackerapi.suites;
 
+import com.gustavomp.devtrackerapi.controllers.AuthenticationControllerTest;
 import com.gustavomp.devtrackerapi.controllers.ClientControllerTest;
 import com.gustavomp.devtrackerapi.controllers.FinancialTransactionControllerTest;
 import com.gustavomp.devtrackerapi.controllers.ProjectControllerTest;
@@ -11,6 +12,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
 @Suite
 @SuiteDisplayName("Controllers")
 @SelectClasses({
+        AuthenticationControllerTest.class,
         ClientControllerTest.class,
         ProjectControllerTest.class,
         FinancialTransactionControllerTest.class,
