@@ -1,6 +1,7 @@
 package com.gustavomp.devtrackerapi.mappers;
 
 import com.gustavomp.devtrackerapi.dtos.requests.user.RegisterRequestDto;
+import com.gustavomp.devtrackerapi.dtos.responses.user.LoginResponseDto;
 import com.gustavomp.devtrackerapi.mappers.utils.PasswordHasher;
 import com.gustavomp.devtrackerapi.models.User;
 import org.mapstruct.Mapper;
@@ -17,5 +18,8 @@ public interface UserMapper {
     // Create User
     @Mapping(target = "password", source = "password", qualifiedByName = "hashPassword")
     User toEntity(RegisterRequestDto dto);
+
+    // Login User
+    LoginResponseDto toLoginResponseDto(String token);
 
 }
